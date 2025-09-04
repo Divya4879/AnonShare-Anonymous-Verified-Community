@@ -2,6 +2,7 @@
 .env
 .env.local
 .env.production
+env-inject.js
 
 # Node modules
 node_modules/
@@ -21,3 +22,6 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# Local Netlify folder
+.netlify
