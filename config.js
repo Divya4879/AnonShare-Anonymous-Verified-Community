@@ -1,22 +1,29 @@
-// Configuration - secure, loads from .env or uses real values
+// Configuration - loads from environment variables only
 const CONFIG = {
-    // Groq AI Configuration - Replace with your actual API key
-    GROQ_API_KEY: 'your_groq_api_key_here',
-    GROQ_API_URL: 'https://api.groq.com/openai/v1/chat/completions',
-    GROQ_MODEL: 'llama-3.3-70b-versatile',
+    // Groq AI Configuration
+    GROQ_API_KEY: getEnvVar('GROQ_API_KEY'),
+    GROQ_API_URL: getEnvVar('GROQ_API_URL', 'https://api.groq.com/openai/v1/chat/completions'),
+    GROQ_MODEL: getEnvVar('GROQ_MODEL', 'llama-3.1-8b-instant'),
     
     // Firebase Configuration
-    FIREBASE_ENABLED: true,
     FIREBASE_CONFIG: {
-        apiKey: 'AIzaSyBvOkBjWi40VpYXRhieWn-wdVxGSfXpgdg',
-        authDomain: 'anonshare-platform.firebaseapp.com',
-        projectId: 'anonshare-platform',
-        storageBucket: 'anonshare-platform.appspot.com',
-        messagingSenderId: '123456789012',
-        appId: '1:123456789012:web:abcdef1234567890'
+        apiKey: getEnvVar('FIREBASE_API_KEY'),
+        authDomain: getEnvVar('FIREBASE_AUTH_DOMAIN'),
+        projectId: getEnvVar('FIREBASE_PROJECT_ID'),
+        storageBucket: getEnvVar('FIREBASE_STORAGE_BUCKET'),
+        messagingSenderId: getEnvVar('FIREBASE_MESSAGING_SENDER_ID'),
+        appId: getEnvVar('FIREBASE_APP_ID')
     },
     
     // Midnight Network Configuration
-    MIDNIGHT_NETWORK_URL: 'https://testnet.midnight.network',
-    MIDNIGHT_API_KEY: 'demo-midnight-key'
+    MIDNIGHT_NETWORK_URL: getEnvVar('MIDNIGHT_NETWORK_URL', 'https://testnet.midnight.network'),
+    MIDNIGHT_API_KEY: getEnvVar('MIDNIGHT_API_KEY', 'demo-midnight-key')
 };
+
+function getEnvVar(key, defaultValue = null) {
+    if (typeof window !== 'undefined' && window.ENV && window.ENV[key]) {
+        return window.ENV[key];
+    }
+    console.warn(`Environment variable ${key} not found. Please check your .env file.`);
+    return defaultValue;
+}
