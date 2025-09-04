@@ -1,17 +1,8 @@
 [build]
+  command = "./build.sh"
   publish = "."
-  command = "npm run build"
 
-[build.environment]
-  NODE_VERSION = "18"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-[context.production.environment]
-  NODE_ENV = "production"
-
-[context.deploy-preview.environment]
-  NODE_ENV = "development"
+[[headers]]
+  for = "/env-inject.js"
+  [headers.values]
+    Content-Type = "application/javascript"
