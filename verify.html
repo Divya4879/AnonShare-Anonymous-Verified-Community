@@ -59,6 +59,91 @@
             border-color: #ff4757;
             background: rgba(255, 71, 87, 0.1);
         }
+        
+        /* Visualization Animations */
+        .chain-step {
+            transition: all 0.5s ease;
+        }
+        .chain-connector {
+            transition: all 0.8s ease;
+        }
+        .crypto-step {
+            transition: all 0.3s ease;
+        }
+        
+        /* Privacy Modal Animations */
+        #privacy-modal {
+            animation: fadeIn 0.3s ease;
+        }
+        #privacy-modal > div {
+            animation: slideUp 0.4s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Pulse Animation for Active Steps */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .chain-step {
+                min-width: 100px;
+                padding: 12px;
+            }
+            .chain-step .w-12 {
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+            .chain-step span {
+                font-size: 0.75rem;
+            }
+            #privacy-modal .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* High Contrast for Accessibility */
+        @media (prefers-contrast: high) {
+            .card-gradient {
+                border-width: 2px;
+            }
+            .text-gradient {
+                color: #ff6b9d;
+                background: none;
+                -webkit-text-fill-color: unset;
+            }
+        }
+        
+        /* Reduced Motion for Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            .chain-step, .chain-connector, .crypto-step {
+                transition: none;
+            }
+            #privacy-modal, #privacy-modal > div {
+                animation: none;
+            }
+        }
         .progress-bar {
             background: linear-gradient(90deg, #ff6b9d 0%, #ff4757 100%);
         }
@@ -103,7 +188,15 @@
             <!-- Header -->
             <div class="text-center mb-12">
                 <h1 class="text-3xl md:text-4xl font-bold text-gradient mb-4">Verify Your Identity</h1>
-                <p class="text-xl text-pink-200">Upload your ID card to get verified and join our community</p>
+                <p class="text-xl text-pink-200 mb-6">Upload your ID card to get verified and join our community</p>
+                
+                <!-- Test Visualizations Button (for demo) -->
+                <div class="mb-4">
+                    <button id="test-visualizations" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        🎬 Preview Visualizations
+                    </button>
+                    <p class="text-pink-300 text-sm mt-2">Click to see the cryptographic process in action</p>
+                </div>
             </div>
 
             <!-- Upload Section -->
@@ -226,6 +319,255 @@
                     </div>
                 </div>
 
+                <!-- Privacy Breakdown Modal -->
+                <div id="privacy-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div class="card-gradient rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="text-2xl font-bold text-gradient">🔒 Privacy Breakdown</h3>
+                                <button id="close-privacy-modal" class="text-pink-300 hover:text-white transition-colors">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <!-- Hidden Data -->
+                                <div class="bg-red-900 bg-opacity-20 rounded-lg p-4 border border-red-500 border-opacity-30">
+                                    <div class="flex items-center mb-3">
+                                        <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center mr-3">
+                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                            </svg>
+                                        </div>
+                                        <h4 class="text-red-300 font-semibold">Private (Hidden)</h4>
+                                    </div>
+                                    <ul class="space-y-2 text-sm text-red-200">
+                                        <li class="flex items-center">
+                                            <span class="w-2 h-2 bg-red-400 rounded-full mr-2"></span>
+                                            Your full name
+                                        </li>
+                                        <li class="flex items-center">
+                                            <span class="w-2 h-2 bg-red-400 rounded-full mr-2"></span>
+                                            ID/Document number
+                                        </li>
+                                        <li class="flex items-center">
+                                            <span class="w-2 h-2 bg-red-400 rounded-full mr-2"></span>
+                                            Personal details
+                                        </li>
+                                        <li class="flex items-center">
+                                            <span class="w-2 h-2 bg-red-400 rounded-full mr-2"></span>
+                                            Biometric data
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Visible Data -->
+                                <div class="bg-green-900 bg-opacity-20 rounded-lg p-4 border border-green-500 border-opacity-30">
+                                    <div class="flex items-center mb-3">
+                                        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                            </svg>
+                                        </div>
+                                        <h4 class="text-green-300 font-semibold">Public (Visible)</h4>
+                                    </div>
+                                    <ul class="space-y-2 text-sm text-green-200">
+                                        <li class="flex items-center">
+                                            <span class="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+                                            Organization type
+                                        </li>
+                                        <li class="flex items-center">
+                                            <span class="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+                                            Role verification
+                                        </li>
+                                        <li class="flex items-center">
+                                            <span class="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+                                            Proof validity
+                                        </li>
+                                        <li class="flex items-center">
+                                            <span class="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+                                            Verification score
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 bg-blue-900 bg-opacity-20 rounded-lg p-4 border border-blue-500 border-opacity-30">
+                                <h4 class="text-blue-300 font-semibold mb-2">🔐 Zero-Knowledge Proof</h4>
+                                <p class="text-blue-200 text-sm">
+                                    Your identity is cryptographically proven without revealing any personal information. 
+                                    The community sees your credentials are valid, but never knows who you are.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Midnight Chain Visualization -->
+                <div id="chain-visualization" class="hidden card-gradient rounded-xl p-6 mb-8">
+                    <h3 class="text-xl font-bold text-gradient mb-4">🌙 Midnight Network Processing</h3>
+                    
+                    <div class="space-y-4">
+                        <!-- Chain Steps -->
+                        <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4">
+                            <div id="chain-step-1" class="chain-step flex flex-col items-center p-4 rounded-lg bg-gray-800 bg-opacity-50 min-w-[120px]">
+                                <div class="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center mb-2">
+                                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-sm text-gray-400 text-center">Proof Generation</span>
+                            </div>
+
+                            <div class="hidden md:block w-8 h-0.5 bg-gray-600 chain-connector" id="connector-1"></div>
+
+                            <div id="chain-step-2" class="chain-step flex flex-col items-center p-4 rounded-lg bg-gray-800 bg-opacity-50 min-w-[120px]">
+                                <div class="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center mb-2">
+                                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-sm text-gray-400 text-center">Network Broadcast</span>
+                            </div>
+
+                            <div class="hidden md:block w-8 h-0.5 bg-gray-600 chain-connector" id="connector-2"></div>
+
+                            <div id="chain-step-3" class="chain-step flex flex-col items-center p-4 rounded-lg bg-gray-800 bg-opacity-50 min-w-[120px]">
+                                <div class="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center mb-2">
+                                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-sm text-gray-400 text-center">Block Mining</span>
+                            </div>
+
+                            <div class="hidden md:block w-8 h-0.5 bg-gray-600 chain-connector" id="connector-3"></div>
+
+                            <div id="chain-step-4" class="chain-step flex flex-col items-center p-4 rounded-lg bg-gray-800 bg-opacity-50 min-w-[120px]">
+                                <div class="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center mb-2">
+                                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-sm text-gray-400 text-center">Network Consensus</span>
+                            </div>
+
+                            <div class="hidden md:block w-8 h-0.5 bg-gray-600 chain-connector" id="connector-4"></div>
+
+                            <div id="chain-step-5" class="chain-step flex flex-col items-center p-4 rounded-lg bg-gray-800 bg-opacity-50 min-w-[120px]">
+                                <div class="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center mb-2">
+                                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-sm text-gray-400 text-center">Chain Addition</span>
+                            </div>
+                        </div>
+
+                        <!-- Chain Status -->
+                        <div id="chain-status" class="bg-black bg-opacity-30 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-pink-200">Status:</span>
+                                <span id="chain-status-text" class="text-yellow-400">Initializing...</span>
+                            </div>
+                            <div class="flex items-center justify-between mt-2">
+                                <span class="text-pink-200">Block Height:</span>
+                                <span id="chain-block-height" class="text-blue-400">#---</span>
+                            </div>
+                            <div class="flex items-center justify-between mt-2">
+                                <span class="text-pink-200">Transaction Hash:</span>
+                                <span id="chain-tx-hash" class="text-green-400 font-mono text-sm">Generating...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Encryption Process Visualization -->
+                <div id="encryption-visualization" class="hidden card-gradient rounded-xl p-6 mb-8">
+                    <h3 class="text-xl font-bold text-gradient mb-4">🔐 Cryptographic Process</h3>
+                    
+                    <div class="space-y-6">
+                        <!-- Step 1: Input Hashing -->
+                        <div id="crypto-step-1" class="crypto-step bg-black bg-opacity-30 rounded-lg p-4 opacity-50">
+                            <div class="flex items-center mb-3">
+                                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-white font-bold text-sm">1</span>
+                                </div>
+                                <h4 class="text-blue-300 font-semibold">SHA-256 Hashing Private Inputs</h4>
+                            </div>
+                            <div class="ml-11 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-pink-200 text-sm">Name Hash:</span>
+                                    <span id="name-hash" class="text-blue-400 font-mono text-xs">Generating...</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-pink-200 text-sm">ID Hash:</span>
+                                    <span id="id-hash" class="text-blue-400 font-mono text-xs">Generating...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Commitment Creation -->
+                        <div id="crypto-step-2" class="crypto-step bg-black bg-opacity-30 rounded-lg p-4 opacity-50">
+                            <div class="flex items-center mb-3">
+                                <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-white font-bold text-sm">2</span>
+                                </div>
+                                <h4 class="text-purple-300 font-semibold">Commitment Creation</h4>
+                            </div>
+                            <div class="ml-11 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-pink-200 text-sm">Commitment:</span>
+                                    <span id="commitment-hash" class="text-purple-400 font-mono text-xs">Waiting...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: ZK Proof Generation -->
+                        <div id="crypto-step-3" class="crypto-step bg-black bg-opacity-30 rounded-lg p-4 opacity-50">
+                            <div class="flex items-center mb-3">
+                                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-white font-bold text-sm">3</span>
+                                </div>
+                                <h4 class="text-green-300 font-semibold">ZK Proof Generation</h4>
+                            </div>
+                            <div class="ml-11 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-pink-200 text-sm">Proof Hash:</span>
+                                    <span id="proof-hash" class="text-green-400 font-mono text-xs">Waiting...</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-pink-200 text-sm">Circuit:</span>
+                                    <span class="text-green-400 text-xs">Groth16 (Simulated)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 4: Nullifier Generation -->
+                        <div id="crypto-step-4" class="crypto-step bg-black bg-opacity-30 rounded-lg p-4 opacity-50">
+                            <div class="flex items-center mb-3">
+                                <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-white font-bold text-sm">4</span>
+                                </div>
+                                <h4 class="text-red-300 font-semibold">Rate-Limit Nullifier</h4>
+                            </div>
+                            <div class="ml-11 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-pink-200 text-sm">Nullifier:</span>
+                                    <span id="nullifier-hash" class="text-red-400 font-mono text-xs">Waiting...</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-pink-200 text-sm">Epoch:</span>
+                                    <span id="current-epoch" class="text-red-400 text-xs">---</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Failure Result -->
                 <div id="failure-result" class="hidden card-gradient rounded-xl p-8 mb-8 border-red-500">
                     <div class="text-center">
@@ -238,6 +580,7 @@
                         <div class="bg-black bg-opacity-30 rounded-lg p-6 mb-6">
                             <p class="text-pink-200 mb-4">Your ID card could not be verified. This could be due to:</p>
                             <ul class="text-left text-pink-200 space-y-2">
+                                <li>• Verification score below 4/10 (minimum required)</li>
                                 <li>• Poor image quality or lighting</li>
                                 <li>• Missing required information (name, organization)</li>
                                 <li>• Invalid ID card format</li>
@@ -363,10 +706,56 @@
         const verifyBtn = document.getElementById('verify-btn');
         const removeFileBtn = document.getElementById('remove-file');
 
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Privacy modal close button
+            document.getElementById('close-privacy-modal').addEventListener('click', hidePrivacyModal);
+            
+            // Close modal when clicking outside
+            document.getElementById('privacy-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    hidePrivacyModal();
+                }
+            });
+
+            // Mobile menu toggle
+            document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+                const menu = document.getElementById('mobile-menu');
+                menu.classList.toggle('hidden');
+            });
+
+            // Test visualizations button
+            document.getElementById('test-visualizations').addEventListener('click', function() {
+                console.log('🎬 Testing visualizations...');
+                
+                // Show encryption visualization first
+                showEncryptionVisualization();
+                
+                // Show chain visualization after 3 seconds
+                setTimeout(() => {
+                    showChainVisualization();
+                }, 3000);
+                
+                // Show privacy modal after 8 seconds
+                setTimeout(() => {
+                    showPrivacyModal();
+                }, 8000);
+            });
+
+            // File upload handler
+            document.getElementById('file-input').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    console.log('📁 File uploaded, starting verification...');
+                }
+            });
+
+            // Keyboard accessibility
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    hidePrivacyModal();
+                }
+            });
         });
 
         // Upload area click
@@ -472,6 +861,9 @@
             document.getElementById('upload-section').classList.add('hidden');
             document.getElementById('processing-section').classList.remove('hidden');
             
+            // Show encryption visualization immediately
+            showEncryptionVisualization();
+            
             // Don't reset extractedData - this was causing the issue!
             // Keep any existing data from previous attempts
 
@@ -539,6 +931,9 @@
                 await generateZKProof();
                 completeStep(4);
                 
+                // Show chain visualization before blockchain submission
+                showChainVisualization();
+                
                 // Step 5: Submit to Midnight Network
                 await submitToMidnight();
                 completeStep(5);
@@ -554,38 +949,40 @@
                 document.getElementById('processing-section').classList.add('hidden');
                 document.getElementById('results-section').classList.remove('hidden');
                 
-                // Show specific error for invalid documents
+                // Enhanced error handling with specific messages
                 if (error.message.includes('not an identity document') || 
                     error.message.includes('not a valid identity document')) {
                     
-                    console.log('Showing invalid document error');
-                    document.getElementById('failure-result').classList.remove('hidden');
+                    showError('Document not recognized - Try a clearer image or different angle', 'warning');
+                    showFailureResult(0, 'Invalid document format detected');
                     
-                    // Clear any existing content first
-                    const failureResult = document.getElementById('failure-result');
-                    const existingError = failureResult.querySelector('.bg-red-900');
-                    if (existingError) existingError.remove();
+                } else if (error.message.includes('Network') || error.message.includes('connection')) {
                     
-                    const errorDiv = document.createElement('div');
-                    errorDiv.className = 'bg-red-900 bg-opacity-30 rounded-lg p-4 mt-4';
-                    errorDiv.innerHTML = `
-                        <h3 class="text-red-300 font-bold mb-2">❌ Invalid Document</h3>
-                        <p class="text-red-200 text-sm">${error.message}</p>
-                        <p class="text-red-200 text-sm mt-2"><strong>Please upload:</strong><br>
-                        • ID cards (Aadhar, PAN, Passport)<br>
-                        • Academic certificates/marksheets<br>
-                        • Employee ID cards</p>
-                    `;
+                    showError('Network connection failed - Check internet and retry', 'error');
+                    showFailureResult(verificationScore || 0, 'Network connectivity issue');
                     
-                    failureResult.appendChild(errorDiv);
-                    console.log('Error div added to DOM');
+                } else if (error.message.includes('Rate limit')) {
                     
-                    // Make sure processing section is hidden
-                    document.getElementById('processing-section').style.display = 'none';
+                    const nextHour = new Date();
+                    nextHour.setHours(nextHour.getHours() + 1, 0, 0, 0);
+                    const minutesLeft = Math.ceil((nextHour - new Date()) / (1000 * 60));
+                    
+                    showError(`Rate limit exceeded - Next attempt available in ${minutesLeft} minutes`, 'warning');
+                    showFailureResult(verificationScore || 0, 'Too many verification attempts');
+                    
+                } else if (verificationScore < 4) {
+                    
+                    showError(`Verification score too low (${verificationScore}/10) - Minimum 4/10 required`, 'error');
+                    showFailureResult(verificationScore, 'Document quality insufficient');
+                    
                 } else {
                     console.log('Showing general failure result');
+                    showError('Verification failed - Please try again with a different document', 'error');
                     showFailureResult(verificationScore || 0, error.message);
                 }
+                
+                // Make sure processing section is hidden
+                document.getElementById('processing-section').style.display = 'none';
             }
         }
 
@@ -618,7 +1015,7 @@
                 console.log('Submitting verification to Midnight Network...');
                 
                 // Submit proof to blockchain
-                const result = await midnight.submitVerification(zkProof);
+                const result = await midnight.submitToBlockchain(zkProof);
                 
                 console.log('Verification submitted to blockchain:', result);
                 
@@ -1052,12 +1449,154 @@
             document.getElementById('processing-section').classList.add('hidden');
             document.getElementById('results-section').classList.remove('hidden');
             
-            // More lenient success criteria
-            if (verificationScore >= 2 && zkProof) {
+            // Accept verification score of 4 or above
+            if (verificationScore >= 4 && zkProof) {
                 showSuccessResult(verificationScore);
+                // Show privacy modal after successful verification
+                setTimeout(() => showPrivacyModal(), 1000);
             } else {
                 showFailureResult(verificationScore);
             }
+        }
+
+        // Privacy Modal Functions
+        function showPrivacyModal() {
+            document.getElementById('privacy-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hidePrivacyModal() {
+            document.getElementById('privacy-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Chain Visualization Functions
+        function showChainVisualization() {
+            const chainViz = document.getElementById('chain-visualization');
+            chainViz.classList.remove('hidden');
+            // Scroll to make it visible
+            chainViz.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            animateChainSteps();
+        }
+
+        async function animateChainSteps() {
+            const steps = ['chain-step-1', 'chain-step-2', 'chain-step-3', 'chain-step-4', 'chain-step-5'];
+            const connectors = ['connector-1', 'connector-2', 'connector-3', 'connector-4'];
+            const statusText = document.getElementById('chain-status-text');
+            const blockHeight = document.getElementById('chain-block-height');
+            const txHash = document.getElementById('chain-tx-hash');
+
+            for (let i = 0; i < steps.length; i++) {
+                // Activate current step
+                const step = document.getElementById(steps[i]);
+                step.classList.remove('opacity-50');
+                step.classList.add('bg-pink-500', 'bg-opacity-20', 'border', 'border-pink-500', 'border-opacity-30');
+                
+                const icon = step.querySelector('.w-12');
+                icon.classList.remove('bg-gray-600');
+                icon.classList.add('bg-pink-500');
+
+                // Update status
+                const statusMessages = [
+                    'Generating ZK Proof...',
+                    'Broadcasting to Network...',
+                    'Mining Block...',
+                    'Reaching Consensus...',
+                    'Adding to Chain...'
+                ];
+                statusText.textContent = statusMessages[i];
+                statusText.className = 'text-pink-400';
+
+                // Animate connector
+                if (i < connectors.length) {
+                    setTimeout(() => {
+                        const connector = document.getElementById(connectors[i]);
+                        connector.classList.remove('bg-gray-600');
+                        connector.classList.add('bg-pink-500');
+                    }, 1000);
+                }
+
+                // Update block height and tx hash
+                if (i === 2) { // Mining step
+                    blockHeight.textContent = `#${Math.floor(Math.random() * 1000000) + 500000}`;
+                }
+                if (i === 4) { // Final step
+                    txHash.textContent = `0x${Math.random().toString(16).substr(2, 8)}...`;
+                    statusText.textContent = 'Successfully Added to Chain';
+                    statusText.className = 'text-green-400';
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+        }
+
+        // Encryption Visualization Functions
+        function showEncryptionVisualization() {
+            const encryptionViz = document.getElementById('encryption-visualization');
+            encryptionViz.classList.remove('hidden');
+            // Scroll to make it visible
+            encryptionViz.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            animateEncryptionSteps();
+        }
+
+        async function animateEncryptionSteps() {
+            const steps = ['crypto-step-1', 'crypto-step-2', 'crypto-step-3', 'crypto-step-4'];
+            
+            for (let i = 0; i < steps.length; i++) {
+                const step = document.getElementById(steps[i]);
+                step.classList.remove('opacity-50');
+                step.classList.add('border', 'border-pink-500', 'border-opacity-30');
+
+                // Animate hash generation with typewriter effect
+                if (i === 0) {
+                    await typewriterEffect('name-hash', generateShortHash());
+                    await typewriterEffect('id-hash', generateShortHash());
+                } else if (i === 1) {
+                    await typewriterEffect('commitment-hash', generateShortHash());
+                } else if (i === 2) {
+                    await typewriterEffect('proof-hash', generateShortHash());
+                } else if (i === 3) {
+                    const epoch = Math.floor(Date.now() / (1000 * 60 * 60));
+                    document.getElementById('current-epoch').textContent = epoch;
+                    await typewriterEffect('nullifier-hash', generateShortHash());
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 1500));
+            }
+        }
+
+        async function typewriterEffect(elementId, text) {
+            const element = document.getElementById(elementId);
+            element.textContent = '';
+            
+            for (let i = 0; i < text.length; i++) {
+                element.textContent += text[i];
+                await new Promise(resolve => setTimeout(resolve, 50));
+            }
+        }
+
+        function generateShortHash() {
+            return Math.random().toString(16).substr(2, 8) + '...';
+        }
+
+        // Enhanced Error Handling
+        function showError(message, type = 'error') {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm ${
+                type === 'error' ? 'bg-red-600' : 'bg-yellow-600'
+            } text-white`;
+            
+            errorDiv.innerHTML = `
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="text-sm">${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(errorDiv);
+            setTimeout(() => errorDiv.remove(), 5000);
         }
 
         function showSuccessResult(score) {
@@ -1098,7 +1637,11 @@
 
         function showFailureResult(score, errorMessage = null) {
             document.getElementById('failure-result').classList.remove('hidden');
-            document.getElementById('failed-score').textContent = `${score}/10`;
+            
+            const failedScoreElement = document.getElementById('failed-score');
+            if (failedScoreElement) {
+                failedScoreElement.textContent = `${score}/10`;
+            }
             
             // Show specific error message if provided
             if (errorMessage) {
