@@ -2,18 +2,27 @@
 let db = null;
 
 function initializeFirebase() {
-    if (!CONFIG.FIREBASE_ENABLED) {
-        console.log('Firebase disabled - using demo mode');
-        return false;
+    if (typeof firebase !== 'undefined') {
+        try {
+            const firebaseConfig = CONFIG.FIREBASE_CONFIG;
+            
+            // Validate config
+            if (!firebaseConfig.apiKey || firebaseConfig.apiKey === '') {
+                console.log('Firebase config not available - using demo mode');
+                return false;
+            }
+            
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            console.log('Firebase initialized successfully');
+            return true;
+        } catch (error) {
+            console.error('Firebase initialization failed:', error);
+            return false;
+        }
     }
     
-    if (typeof firebase !== 'undefined') {
-        firebase.initializeApp(CONFIG.FIREBASE_CONFIG);
-        db = firebase.firestore();
-        console.log('Firebase initialized successfully');
-        return true;
-    }
-    console.error('Firebase SDK not loaded');
+    console.log('Firebase SDK not loaded');
     return false;
 }
 
@@ -46,7 +55,7 @@ const StorageManager = {
     async loadPosts() {
         let userPosts = [];
         
-        if (CONFIG.FIREBASE_ENABLED && db) {
+        if (db) {
             try {
                 const snapshot = await db.collection('posts')
                     .orderBy('timestamp', 'desc')
@@ -74,21 +83,70 @@ const StorageManager = {
     },
 
     async savePost(post) {
-        if (CONFIG.FIREBASE_ENABLED && db) {
+        if (db) {
             try {
-                const docRef = await db.collection('posts').add({
-                    ...post,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                console.log('Post saved to Firebase with ID:', docRef.id);
-                return true;
+                const docRef = await db.collection('posts').add(post);
+                console.log('Post saved to Firebase:', docRef.id);
+                return docRef.id;
             } catch (error) {
-                console.error('Firebase save error:', error);
+                console.error('Error saving post:', error);
                 return false;
             }
         }
-        
-        console.log('Firebase disabled - post not saved');
+        return false;
+    },
+
+    async likePost(postId, userId) {
+        if (db) {
+            try {
+                const postRef = db.collection('posts').doc(postId);
+                const doc = await postRef.get();
+                
+                if (doc.exists) {
+                    const data = doc.data();
+                    const likedBy = data.likedBy || [];
+                    const likes = data.likes || 0;
+                    
+                    if (likedBy.includes(userId)) {
+                        await postRef.update({
+                            likes: Math.max(0, likes - 1),
+                            likedBy: likedBy.filter(id => id !== userId)
+                        });
+                        return false;
+                    } else {
+                        await postRef.update({
+                            likes: likes + 1,
+                            likedBy: [...likedBy, userId]
+                        });
+                        return true;
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating like:', error);
+            }
+        }
+        return null;
+    },
+
+    async addReply(postId, reply) {
+        if (db) {
+            try {
+                const postRef = db.collection('posts').doc(postId);
+                const doc = await postRef.get();
+                
+                if (doc.exists) {
+                    const data = doc.data();
+                    const replies = data.replies || [];
+                    
+                    await postRef.update({
+                        replies: [...replies, reply]
+                    });
+                    return true;
+                }
+            } catch (error) {
+                console.error('Error adding reply:', error);
+            }
+        }
         return false;
     }
 };
