@@ -1060,6 +1060,50 @@
                 notification.remove();
             }, 3000);
         }
+
+        // Like/Reply Functions
+        function toggleLike(postId) {
+            const post = posts.find(p => p.id == postId);
+            if (post) {
+                post.likes = (post.likes || 0) + 1;
+                document.getElementById(`like-count-${postId}`).textContent = post.likes;
+                showNotification('Post liked!', 'success');
+            }
+        }
+
+        function toggleReply(postId) {
+            const replyForm = document.getElementById(`reply-form-${postId}`);
+            replyForm.classList.toggle('hidden');
+            if (!replyForm.classList.contains('hidden')) {
+                document.getElementById(`reply-text-${postId}`).focus();
+            }
+        }
+
+        function cancelReply(postId) {
+            document.getElementById(`reply-form-${postId}`).classList.add('hidden');
+            document.getElementById(`reply-text-${postId}`).value = '';
+        }
+
+        function submitReply(postId) {
+            const replyText = document.getElementById(`reply-text-${postId}`).value.trim();
+            if (!replyText) return;
+
+            const post = posts.find(p => p.id == postId);
+            if (post) {
+                if (!post.replies) post.replies = [];
+                
+                const reply = {
+                    id: Date.now(),
+                    author: 'Verified User',
+                    content: replyText,
+                    timestamp: new Date().toISOString()
+                };
+                
+                post.replies.push(reply);
+                displayPosts(); // Refresh the display
+                showNotification('Reply added!', 'success');
+            }
+        }
     </script>
 </body>
 </html>
