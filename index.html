@@ -177,7 +177,6 @@
 
     <!-- Midnight Network Integration -->
     <script src="midnight-integration.js"></script>
-    <script src="test-real-midnight.js"></script>
     
     <script>
         // Mobile menu toggle
@@ -204,7 +203,7 @@
                 const success = await midnight.initialize();
                 
                 if (success) {
-                    const status = midnight.getNetworkStatus();
+                    const status = await midnight.getNetworkStatus();
                     indicator.className = 'w-2 h-2 rounded-full bg-green-500';
                     text.textContent = 'ZK Ready';
                     text.title = 'ID verification with ZK proofs ready';
