@@ -1,7 +1,7 @@
 // Configuration - secure, loads from .env or uses real values
 const CONFIG = {
-    // Groq AI Configuration
-    GROQ_API_KEY: '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',
+    // Groq AI Configuration - Replace with your actual API key
+    GROQ_API_KEY: 'your_groq_api_key_here',
     GROQ_API_URL: 'https://api.groq.com/openai/v1/chat/completions',
     GROQ_MODEL: 'llama-3.3-70b-versatile',
     

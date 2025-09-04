@@ -123,8 +123,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="text-lg font-bold text-green-400">Verified User</h3>
-                                <p id="user-badge" class="text-pink-200 text-sm"></p>
+                                <h3 id="user-name" class="text-lg font-bold text-green-400">Verified User</h3>
+                                <p id="user-badge" class="text-pink-200 text-sm">Verification pending...</p>
                             </div>
                         </div>
                         <button id="new-post-btn" class="btn-gradient text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity">
@@ -220,12 +220,85 @@
         let currentAvatar = null;
         let firebaseInitialized = false;
 
+        // Load verification data from localStorage (45 min session)
+        function loadUserVerificationData() {
+            try {
+                const verificationData = localStorage.getItem('anonshare_verification_data');
+                if (verificationData) {
+                    const data = JSON.parse(verificationData);
+                    
+                    // Check if verification expired
+                    if (Date.now() > data.expiresAt) {
+                        localStorage.removeItem('anonshare_verification_data');
+                        document.getElementById('user-name').textContent = 'Verified User';
+                        document.getElementById('user-badge').textContent = 'Verification expired - please verify again';
+                        return;
+                    }
+                    
+                    // Update user display with real data
+                    const userName = document.getElementById('user-name');
+                    const userBadge = document.getElementById('user-badge');
+                    
+                    userName.textContent = `Verified User`;
+                    userBadge.textContent = `Verified ${data.role} at ${data.organization}`;
+                    
+                    if (data.verificationScore) {
+                        userBadge.textContent += ` • Score: ${data.verificationScore}/10`;
+                    }
+                    
+                    // Show remaining time
+                    const timeLeft = Math.max(0, Math.floor((data.expiresAt - Date.now()) / (1000 * 60)));
+                    userBadge.textContent += ` • ${timeLeft} min left`;
+                } else {
+                    document.getElementById('user-name').textContent = 'Verified User';
+                    document.getElementById('user-badge').textContent = 'Please verify your identity to post';
+                }
+            } catch (error) {
+                console.error('Error loading verification data:', error);
+                document.getElementById('user-name').textContent = 'Verified User';
+                document.getElementById('user-badge').textContent = 'Verification error';
+            }
+        }
+
+        // Profanity filter
+        function filterProfanity(text) {
+            let filtered = text;
+            profanityWords.forEach(word => {
+                const regex = new RegExp(word, 'gi');
+                filtered = filtered.replace(regex, '*'.repeat(word.length));
+            });
+            return filtered;
+        }
+
+        // Check if user is verified
+        function isUserVerified() {
+            const verificationData = localStorage.getItem('anonshare_verification_data');
+            if (!verificationData) return false;
+            
+            const data = JSON.parse(verificationData);
+            return Date.now() <= data.expiresAt;
+        }
+
+        // Get user verification data
+        function getUserData() {
+            const verificationData = localStorage.getItem('anonshare_verification_data');
+            if (!verificationData) return null;
+            
+            const data = JSON.parse(verificationData);
+            if (Date.now() > data.expiresAt) return null;
+            
+            return data;
+        }
+
         // Initialize page with Midnight integration
         document.addEventListener('DOMContentLoaded', async function() {
-            // Initialize Firebase
+            // Initialize Firebase for posts only
             firebaseInitialized = initializeFirebase();
             
-            // Load posts from Firebase or demo
+            // Load verification data from localStorage
+            loadUserVerificationData();
+            
+            // Load posts from Firebase
             posts = await StorageManager.loadPosts();
             
             // Initialize Midnight Network
@@ -259,25 +332,37 @@
                     posts = [
                         {
                             id: 1,
-                            author: "Anonymous User",
+                            author: "Verified User",
                             organization: "University",
                             role: "Student/Academic",
                             content: "Excited to be part of this privacy-first community powered by Midnight Network! Zero-knowledge proofs are the future.",
                             timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
                             avatar: null,
                             orgType: 1,
-                            roleType: 1
+                            roleType: 1,
+                            likes: 5,
+                            likedBy: ['user1', 'user2', 'user3', 'user4', 'user5'],
+                            replies: [
+                                {
+                                    content: "Totally agree! Privacy is so important.",
+                                    author: "Verified User",
+                                    timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString()
+                                }
+                            ]
                         },
                         {
                             id: 2,
-                            author: "Anonymous User",
+                            author: "Verified User",
                             organization: "Company",
                             role: "Employee/Professional",
                             content: "Working on privacy-preserving applications. The Midnight Network makes it so easy to build with ZK proofs!",
                             timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
                             avatar: null,
                             orgType: 2,
-                            roleType: 2
+                            roleType: 2,
+                            likes: 3,
+                            likedBy: ['user6', 'user7', 'user8'],
+                            replies: []
                         }
                     ];
                 }
@@ -321,7 +406,7 @@
                 
                 const newPost = {
                     id: Date.now(),
-                    author: 'Anonymous User', // Privacy-first: no real names
+                    author: 'Verified User', // Privacy-first: no real names
                     organization: currentUser.organization,
                     role: currentUser.role,
                     content: content,
@@ -656,39 +741,87 @@
         async function submitPost() {
             const content = document.getElementById('post-content').value.trim();
             
-            if (!content || !currentUser) return;
+            if (!content) return;
             
-            // Disable submit button to prevent duplicates
+            // Check for profanity
+            const hasProfanity = profanityWords.some(word => {
+                return content.toLowerCase().includes(word.toLowerCase());
+            });
+            
+            if (hasProfanity) {
+                showProfanityWarning();
+                return;
+            }
+            
+            // Check if user is verified
+            if (!isUserVerified()) {
+                alert('Please verify your identity first to post');
+                return;
+            }
+            
+            const userData = getUserData();
+            if (!userData) return;
+            
+            // Disable submit button
             const submitBtn = document.getElementById('submit-post');
             submitBtn.disabled = true;
             submitBtn.textContent = 'Posting...';
             
-            const newPost = {
-                author: currentUser.name || 'Anonymous User',
-                organization: currentUser.organization || 'Unknown Organization',
-                role: currentUser.role || 'User',
-                content: content,
-                timestamp: new Date().toISOString(),
-                avatar: currentAvatar,
-                score: currentUser.score || 8,
-                likes: 0
-            };
-            
-            // Save to Firebase
-            const saved = await StorageManager.savePost(newPost);
-            
-            if (saved) {
-                // Reload posts from Firebase
-                posts = await StorageManager.loadPosts();
-                loadPosts();
+            try {
+                // Apply profanity filter
+                const filteredContent = filterProfanity(content);
+                
+                const newPost = {
+                    content: filteredContent,
+                    role: userData.role,
+                    organization: userData.organization,
+                    avatar: currentAvatar,
+                    timestamp: Date.now(),
+                    likes: 0,
+                    likedBy: [],
+                    replies: []
+                };
+                
+                // Save to Firebase
+                if (db) {
+                    const docRef = await db.collection('posts').add(newPost);
+                    newPost.id = docRef.id;
+                    console.log('Post saved to Firebase:', docRef.id);
+                } else {
+                    newPost.id = Date.now().toString();
+                }
+                
+                // Add to local posts array
+                posts.unshift(newPost);
+                renderPosts();
+                
+                // Clear form
+                document.getElementById('post-content').value = '';
+                document.getElementById('char-count').textContent = '0';
+                
+                // Hide form
                 hideNewPostForm();
                 showNotification('Post published successfully!', 'success');
-            } else {
-                showNotification('Failed to publish post. Please try again.', 'error');
-                // Re-enable submit button on failure
+                
+            } catch (error) {
+                console.error('Error creating post:', error);
+                alert('Error creating post. Please try again.');
+            } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Post';
             }
+        }
+
+        function renderPosts() {
+            const postsContainer = document.getElementById('posts-container');
+            if (posts.length === 0) {
+                document.getElementById('empty-posts').classList.remove('hidden');
+                postsContainer.innerHTML = '';
+                return;
+            }
+            
+            document.getElementById('empty-posts').classList.add('hidden');
+            postsContainer.innerHTML = posts.map(post => createPostHTML(post)).join('');
         }
 
         function createPostHTML(post) {
@@ -713,7 +846,7 @@
                    </svg>`;
             
             return `
-                <div class="post-card rounded-xl p-6">
+                <div class="post-card rounded-xl p-6" data-post-id="${post.id}">
                     <div class="flex items-start space-x-4">
                         <div class="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
                             ${avatarHTML}
@@ -726,13 +859,177 @@
                                 </span>
                             </div>
                             ${post.content ? `<p class="text-pink-200 mb-3 leading-relaxed">${post.content}</p>` : ''}
-                            <div class="flex items-center justify-between text-sm text-pink-300">
+                            
+                            <!-- Like and Reply Actions -->
+                            <div class="flex items-center justify-between text-sm text-pink-300 mb-3">
                                 <span>${timeAgo}</span>
+                                <div class="flex items-center space-x-4">
+                                    <button onclick="toggleLike('${post.id}')" class="flex items-center space-x-1 hover:text-pink-400 transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                        </svg>
+                                        <span id="like-count-${post.id}">${post.likes || 0}</span>
+                                    </button>
+                                    <button onclick="toggleReply('${post.id}')" class="flex items-center space-x-1 hover:text-pink-400 transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                        </svg>
+                                        <span>Reply</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Reply Form (Hidden by default) -->
+                            <div id="reply-form-${post.id}" class="hidden mt-3 p-3 bg-gray-800 bg-opacity-50 rounded-lg">
+                                <textarea id="reply-text-${post.id}" placeholder="Write a reply..." class="w-full bg-gray-700 text-white p-2 rounded resize-none" rows="2"></textarea>
+                                <div class="flex justify-end mt-2 space-x-2">
+                                    <button onclick="cancelReply('${post.id}')" class="px-3 py-1 text-gray-400 hover:text-white">Cancel</button>
+                                    <button onclick="submitReply('${post.id}')" class="px-3 py-1 bg-pink-600 text-white rounded hover:bg-pink-700">Reply</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Replies -->
+                            <div id="replies-${post.id}" class="mt-3 space-y-2">
+                                ${(post.replies || []).map(reply => `
+                                    <div class="bg-gray-800 bg-opacity-30 p-3 rounded-lg ml-4">
+                                        <div class="flex items-center space-x-2 mb-1">
+                                            <span class="font-semibold text-white text-sm">Verified User</span>
+                                            <span class="text-xs text-gray-400">${getTimeAgo(new Date(reply.timestamp))}</span>
+                                        </div>
+                                        <p class="text-pink-200 text-sm">${reply.content}</p>
+                                    </div>
+                                `).join('')}
                             </div>
                         </div>
                     </div>
                 </div>
             `;
+        }
+
+        // Like and Reply Functions
+        async function toggleLike(postId) {
+            if (!currentUser) {
+                showNotification('Please verify your ID first', 'error');
+                return;
+            }
+            
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            const userId = currentUser.id || 'anonymous';
+            if (!post.likedBy) post.likedBy = [];
+            
+            const hasLiked = post.likedBy.includes(userId);
+            
+            if (hasLiked) {
+                // Unlike
+                post.likes = Math.max(0, (post.likes || 0) - 1);
+                post.likedBy = post.likedBy.filter(id => id !== userId);
+            } else {
+                // Like
+                post.likes = (post.likes || 0) + 1;
+                post.likedBy.push(userId);
+            }
+            
+            // Update UI
+            const likeCount = document.getElementById(`like-count-${postId}`);
+            if (likeCount) {
+                likeCount.textContent = post.likes;
+            }
+            
+            // Save to Firebase
+            await StorageManager.likePost(postId, userId);
+        }
+
+        function toggleReply(postId) {
+            if (!currentUser) {
+                showNotification('Please verify your ID first', 'error');
+                return;
+            }
+            
+            const replyForm = document.getElementById(`reply-form-${postId}`);
+            if (replyForm) {
+                replyForm.classList.toggle('hidden');
+                if (!replyForm.classList.contains('hidden')) {
+                    document.getElementById(`reply-text-${postId}`).focus();
+                }
+            }
+        }
+
+        function cancelReply(postId) {
+            const replyForm = document.getElementById(`reply-form-${postId}`);
+            const replyText = document.getElementById(`reply-text-${postId}`);
+            if (replyForm && replyText) {
+                replyForm.classList.add('hidden');
+                replyText.value = '';
+            }
+        }
+
+        async function submitReply(postId) {
+            if (!currentUser) {
+                showNotification('Please verify your ID first', 'error');
+                return;
+            }
+            
+            const replyText = document.getElementById(`reply-text-${postId}`);
+            if (!replyText || !replyText.value.trim()) {
+                showNotification('Please enter a reply', 'error');
+                return;
+            }
+            
+            const content = replyText.value.trim();
+            
+            // Check for profanity
+            const hasProfanity = profanityWords.some(word => {
+                return content.toLowerCase().includes(word.toLowerCase());
+            });
+            
+            if (hasProfanity) {
+                showProfanityWarning();
+                return;
+            }
+            
+            const reply = {
+                content: content,
+                author: 'Verified User',
+                timestamp: new Date().toISOString()
+            };
+            
+            // Add to local post
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+                if (!post.replies) post.replies = [];
+                post.replies.push(reply);
+                
+                // Save to Firebase
+                await StorageManager.addReply(postId, reply);
+                
+                // Update UI
+                renderPosts();
+                showNotification('Reply added!', 'success');
+            }
+        }
+
+        function showProfanityWarning() {
+            const warning = document.createElement('div');
+            warning.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            warning.innerHTML = `
+                <div class="bg-gray-800 p-6 rounded-lg max-w-md mx-4">
+                    <div class="flex items-center mb-4">
+                        <svg class="w-6 h-6 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                        <h3 class="text-lg font-semibold text-white">Content Warning</h3>
+                    </div>
+                    <p class="text-pink-200 mb-4">Your message contains inappropriate language. Please revise your content to maintain a respectful community environment.</p>
+                    <div class="flex justify-end">
+                        <button onclick="this.closest('.fixed').remove()" class="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700">
+                            OK
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(warning);
         }
 
         function getTimeAgo(date) {
