@@ -1,0 +1,23 @@
+# API Keys and Sensitive Configuration
+config.js
+.env
+*.env
+
+# Node modules
+node_modules/
+
+# Logs
+*.log
+server.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Build outputs
+dist/
+build/
