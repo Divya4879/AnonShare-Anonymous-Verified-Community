@@ -1074,22 +1074,26 @@
                                         throw new Error('This appears to be a regular image, not an identity document. Please upload an ID card, passport, or academic certificate.');
                                     }
                                     
-                                    // Use Groq AI for better analysis
-                                    console.log('Analyzing with Groq AI...');
-                                    const aiAnalysis = await groqAI.analyzeDocument(text, 'identity_document');
+                                    // Use our enhanced text analysis instead of simple confidence scoring
+                                    console.log('Analyzing extracted text...');
+                                    const analysisResult = analyzeExtractedText(text, confidence || 80);
                                     
-                                    // Combine OCR and AI analysis
-                                    const extractedData = {
-                                        ...aiAnalysis,
-                                        text: text,
-                                        ocrConfidence: confidence || 80,
-                                        hasPhoto: true,
-                                        hasQR: false,
-                                        verificationScore: Math.max(aiAnalysis.confidence / 10, 2)
-                                    };
+                                    // Combine with AI analysis if available
+                                    let finalData = analysisResult;
+                                    try {
+                                        const aiAnalysis = await groqAI.analyzeDocument(text, 'identity_document');
+                                        finalData = {
+                                            ...analysisResult,
+                                            ...aiAnalysis,
+                                            text: text,
+                                            ocrConfidence: confidence || 80
+                                        };
+                                    } catch (aiError) {
+                                        console.warn('AI analysis failed, using text analysis only:', aiError);
+                                    }
                                     
-                                    console.log('Final extracted data:', extractedData);
-                                    resolve(extractedData);
+                                    console.log('Final extracted data:', finalData);
+                                    resolve(finalData);
                                 } catch (error) {
                                     console.warn('OCR or validation failed:', error);
                                     reject(error); // Just reject all errors
@@ -1119,22 +1123,8 @@
         
         // Get demo data for testing
         function getDemoData() {
-            return {
-                text: 'Demo University Student ID Card',
-                confidence: 85,
-                name: 'Demo Student',
-                organization: 'Demo University',
-                role: 'Student',
-                idNumber: 'DEMO' + Date.now(),
-                documentType: 'student_id',
-                hasPhoto: true,
-                hasQR: false,
-                ocrConfidence: 85,
-                verificationScore: 6, // Higher score so it passes validation
-                organizationType: 'university',
-                verificationLevel: 'high',
-                verified: true
-            };
+            const demoText = 'Demo University Student ID Card John Doe Student ID: DEMO123456 Computer Science Department Valid until 2025';
+            return analyzeExtractedText(demoText, 85);
         }
 
         // Enhanced text analysis for Indian IDs and institutional cards
