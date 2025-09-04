@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/opencv.js@1.2.1/opencv.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
     <!-- Configuration and AI Integration -->
+    <script src="env-inject.js" onerror="console.log('env-inject.js not found')"></script>
     <script src="config.js"></script>
     <script src="groq-ai.js"></script>
     
@@ -624,7 +625,7 @@
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <span class="text-pink-200 text-sm">Circuit:</span>
-                                    <span class="text-green-400 text-xs">Groth16 (Simulated)</span>
+                                    <span id="circuit-type" class="text-green-400 text-xs">Groth16 (Simulated)</span>
                                 </div>
                             </div>
                         </div>

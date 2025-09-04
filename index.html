@@ -175,6 +175,10 @@
         </div>
     </footer>
 
+    <!-- Environment Variables (injected during deployment) -->
+    <script src="env-inject.js" onerror="console.log('env-inject.js not found - using .env fallback')"></script>
+    <!-- Configuration -->
+    <script src="config.js"></script>
     <!-- Midnight Network Integration -->
     <script src="midnight-integration.js"></script>
     
