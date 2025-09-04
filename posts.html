@@ -308,6 +308,13 @@
             if (!content || !currentUser) return;
             
             try {
+                // Generate user secret for rate limiting and reputation
+                const userSecret = await generateUserSecret();
+                
+                // Check rate limiting with nullifiers
+                const epoch = Math.floor(Date.now() / (1000 * 60 * 60)); // 1-hour epochs
+                await midnight.generateRateLimitNullifier(userSecret, epoch);
+                
                 // Submit to Midnight Network first
                 const midnightResult = await midnight.submitPost(content);
                 console.log('Post submitted to Midnight Network:', midnightResult);
@@ -323,7 +330,9 @@
                     verificationScore: currentUser.score || 0,
                     orgType: currentUser.orgType || 1,
                     roleType: currentUser.roleType || 1,
-                    zkProof: currentUser.zkProof || null
+                    zkProof: currentUser.zkProof || null,
+                    score: Math.floor(Math.random() * 3) + 8, // 8-10 score for demo
+                    midnightTx: midnightResult.txHash
                 };
                 
                 // Save to Firebase/localStorage as backup
@@ -331,15 +340,69 @@
                 
                 // Add to local array and refresh display
                 posts.unshift(newPost);
+                
+                // Update anonymous reputation
+                await updateAnonymousReputation(userSecret);
+                
                 displayPosts();
                 hideNewPostForm();
                 
-                showNotification('Post published to Midnight Network!', 'success');
+                showNotification('Post published with ZK proof and rate limiting!', 'success');
                 
             } catch (error) {
-                console.error('Failed to submit post:', error);
-                showNotification('Failed to publish post', 'error');
+                if (error.message.includes('Rate limit exceeded')) {
+                    showNotification('Rate limit: 5 posts per hour maximum. Please wait before posting again.', 'error');
+                } else {
+                    console.error('Failed to submit post:', error);
+                    showNotification('Failed to publish post', 'error');
+                }
             }
+        }
+
+        async function generateUserSecret() {
+            // Generate consistent user secret for rate limiting and reputation
+            let userSecret = localStorage.getItem('anonshare_user_secret');
+            if (!userSecret) {
+                const crypto = window.crypto || window.msCrypto;
+                const array = new Uint8Array(32);
+                crypto.getRandomValues(array);
+                userSecret = Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+                localStorage.setItem('anonshare_user_secret', userSecret);
+            }
+            return userSecret;
+        }
+
+        async function updateAnonymousReputation(userSecret) {
+            try {
+                // Get user's posts for reputation calculation
+                const userPosts = posts.filter(post => post.organization === currentUser.organization);
+                
+                if (userPosts.length > 0) {
+                    const reputation = await midnight.buildAnonymousReputation(userPosts, userSecret);
+                    console.log('🏆 Anonymous reputation updated:', reputation);
+                    
+                    // Show reputation indicator
+                    showReputationIndicator(reputation);
+                }
+            } catch (error) {
+                console.error('Failed to update reputation:', error);
+            }
+        }
+
+        function showReputationIndicator(reputation) {
+            const indicator = document.createElement('div');
+            indicator.className = 'fixed top-20 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+            indicator.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <span>Reputation: ${reputation.reputation.avgScore.toFixed(1)}/10 (Anonymous)</span>
+                </div>
+            `;
+            
+            document.body.appendChild(indicator);
+            setTimeout(() => indicator.remove(), 5000);
         }
 
         // Enhanced content filtering
@@ -572,10 +635,11 @@
             // Update character count
             document.getElementById('char-count').textContent = `${charCount}/500`;
             
-            // Check for profanity
-            const hasProfanity = profanityWords.some(word => 
-                content.toLowerCase().includes(word.toLowerCase())
-            );
+            // Check for profanity (whole words only)
+            const hasProfanity = profanityWords.some(word => {
+                const regex = new RegExp(`\\b${word}\\b`, 'gi');
+                return regex.test(content);
+            });
             
             const warningElement = document.getElementById('content-warning');
             if (hasProfanity) {
