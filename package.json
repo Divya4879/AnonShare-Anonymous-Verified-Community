@@ -1,10 +1,33 @@
 {
   "name": "anonshare-platform",
   "version": "1.0.0",
+  "description": "Privacy-first identity verification and anonymous community platform built on Midnight Network",
+  "main": "index.html",
   "scripts": {
-    "start": "npx serve -s . -l 3000"
+    "start": "npx serve . -l 3000",
+    "dev": "npx serve . -l 3000",
+    "deploy": "node scripts/deploy.js"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/midnight-js-sdk": "^1.0.0",
+    "@midnight-ntwrk/compact-runtime": "^1.0.0"
   },
   "devDependencies": {
     "serve": "^14.2.1"
+  },
+  "keywords": [
+    "zero-knowledge",
+    "privacy",
+    "identity-verification",
+    "midnight-network",
+    "blockchain",
+    "anonymous",
+    "community"
+  ],
+  "author": "AnonShare Team",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/anonshare-platform.git"
   }
 }
