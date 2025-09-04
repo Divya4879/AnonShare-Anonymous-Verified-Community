@@ -407,63 +407,146 @@
                 </div>
 
                 <!-- Midnight Chain Visualization -->
+                <!-- Enhanced Midnight Network Architecture Visualization -->
                 <div id="chain-visualization" class="hidden card-gradient rounded-xl p-6 mb-8">
-                    <h3 class="text-xl font-bold text-gradient mb-4">🌙 Midnight Network Processing</h3>
+                    <h3 class="text-xl font-bold text-gradient mb-6 text-center">🌙 Midnight Network Architecture</h3>
                     
-                    <div class="space-y-4">
-                        <!-- Chain Steps -->
-                        <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4">
-                            <div id="chain-step-1" class="chain-step flex flex-col items-center p-4 rounded-lg bg-gray-800 bg-opacity-50 min-w-[120px]">
-                                <div class="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center mb-2">
-                                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                                    </svg>
-                                </div>
-                                <span class="text-sm text-gray-400 text-center">Proof Generation</span>
+                    <!-- Network Topology Visualization -->
+                    <div class="bg-black bg-opacity-40 rounded-lg p-4 mb-6">
+                        <svg viewBox="0 0 800 300" class="w-full h-40 mb-4">
+                            <!-- Background grid -->
+                            <defs>
+                                <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#ff6b9d" stroke-width="0.5" opacity="0.1"/>
+                                </pattern>
+                            </defs>
+                            <rect width="100%" height="100%" fill="url(#grid)"/>
+                            
+                            <!-- Network nodes with pulsing animation -->
+                            <g class="network-nodes">
+                                <circle cx="100" cy="150" r="15" fill="#ff6b9d" opacity="0.8">
+                                    <animate attributeName="r" values="15;20;15" dur="2s" repeatCount="indefinite"/>
+                                </circle>
+                                <text x="100" y="180" text-anchor="middle" fill="#ff6b9d" font-size="10">Client</text>
+                                
+                                <circle cx="250" cy="100" r="12" fill="#00ff88" opacity="0.7">
+                                    <animate attributeName="opacity" values="0.7;1;0.7" dur="1.5s" repeatCount="indefinite"/>
+                                </circle>
+                                <circle cx="250" cy="200" r="12" fill="#00ff88" opacity="0.7">
+                                    <animate attributeName="opacity" values="1;0.7;1" dur="1.5s" repeatCount="indefinite"/>
+                                </circle>
+                                <text x="250" y="230" text-anchor="middle" fill="#00ff88" font-size="10">Validators</text>
+                                
+                                <circle cx="400" cy="80" r="10" fill="#ffd700" opacity="0.6"/>
+                                <circle cx="400" cy="150" r="10" fill="#ffd700" opacity="0.6"/>
+                                <circle cx="400" cy="220" r="10" fill="#ffd700" opacity="0.6"/>
+                                <text x="400" y="250" text-anchor="middle" fill="#ffd700" font-size="10">Consensus Layer</text>
+                                
+                                <circle cx="550" cy="120" r="12" fill="#9d4edd" opacity="0.8"/>
+                                <circle cx="550" cy="180" r="12" fill="#9d4edd" opacity="0.8"/>
+                                <text x="550" y="210" text-anchor="middle" fill="#9d4edd" font-size="10">ZK Verifiers</text>
+                                
+                                <circle cx="700" cy="150" r="18" fill="#ff4081" opacity="0.9">
+                                    <animate attributeName="fill" values="#ff4081;#ff6b9d;#ff4081" dur="3s" repeatCount="indefinite"/>
+                                </circle>
+                                <text x="700" y="180" text-anchor="middle" fill="#ff4081" font-size="10">Midnight Chain</text>
+                            </g>
+                            
+                            <!-- Animated data flow -->
+                            <g class="data-flow">
+                                <line x1="100" y1="150" x2="250" y2="100" stroke="#ff6b9d" stroke-width="2" opacity="0.3"/>
+                                <line x1="100" y1="150" x2="250" y2="200" stroke="#ff6b9d" stroke-width="2" opacity="0.3"/>
+                                <line x1="250" y1="100" x2="400" y2="80" stroke="#00ff88" stroke-width="2" opacity="0.3"/>
+                                <line x1="250" y1="150" x2="400" y2="150" stroke="#00ff88" stroke-width="2" opacity="0.3"/>
+                                <line x1="250" y1="200" x2="400" y2="220" stroke="#00ff88" stroke-width="2" opacity="0.3"/>
+                                <line x1="400" y1="150" x2="550" y2="120" stroke="#ffd700" stroke-width="2" opacity="0.3"/>
+                                <line x1="400" y1="150" x2="550" y2="180" stroke="#ffd700" stroke-width="2" opacity="0.3"/>
+                                <line x1="550" y1="150" x2="700" y2="150" stroke="#9d4edd" stroke-width="2" opacity="0.3"/>
+                                
+                                <!-- Animated data packet -->
+                                <circle r="4" fill="#00ff88" opacity="0">
+                                    <animateMotion dur="4s" repeatCount="indefinite" opacity="1">
+                                        <path d="M100,150 L250,100 L400,80 L550,120 L700,150"/>
+                                    </animateMotion>
+                                    <animate attributeName="opacity" values="0;1;1;1;0" dur="4s" repeatCount="indefinite"/>
+                                </circle>
+                            </g>
+                        </svg>
+                        
+                        <!-- Real-time network metrics -->
+                        <div class="grid grid-cols-4 gap-4 text-center text-xs">
+                            <div class="bg-gray-800/50 p-2 rounded">
+                                <div class="text-green-400 font-bold" id="network-tps">2.7</div>
+                                <div class="text-gray-400">TPS</div>
                             </div>
-
-                            <div class="hidden md:block w-8 h-0.5 bg-gray-600 chain-connector" id="connector-1"></div>
-
-                            <div id="chain-step-2" class="chain-step flex flex-col items-center p-4 rounded-lg bg-gray-800 bg-opacity-50 min-w-[120px]">
-                                <div class="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center mb-2">
-                                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path>
-                                    </svg>
-                                </div>
-                                <span class="text-sm text-gray-400 text-center">Network Broadcast</span>
+                            <div class="bg-gray-800/50 p-2 rounded">
+                                <div class="text-blue-400 font-bold" id="network-nodes">1,247</div>
+                                <div class="text-gray-400">Nodes</div>
                             </div>
-
-                            <div class="hidden md:block w-8 h-0.5 bg-gray-600 chain-connector" id="connector-2"></div>
-
-                            <div id="chain-step-3" class="chain-step flex flex-col items-center p-4 rounded-lg bg-gray-800 bg-opacity-50 min-w-[120px]">
-                                <div class="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center mb-2">
-                                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
-                                    </svg>
-                                </div>
-                                <span class="text-sm text-gray-400 text-center">Block Mining</span>
+                            <div class="bg-gray-800/50 p-2 rounded">
+                                <div class="text-purple-400 font-bold" id="network-latency">156ms</div>
+                                <div class="text-gray-400">Latency</div>
                             </div>
-
-                            <div class="hidden md:block w-8 h-0.5 bg-gray-600 chain-connector" id="connector-3"></div>
-
-                            <div id="chain-step-4" class="chain-step flex flex-col items-center p-4 rounded-lg bg-gray-800 bg-opacity-50 min-w-[120px]">
-                                <div class="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center mb-2">
+                            <div class="bg-gray-800/50 p-2 rounded">
+                                <div class="text-pink-400 font-bold" id="network-finality">98.7%</div>
+                                <div class="text-gray-400">Finality</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Process Flow Steps -->
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                        <div id="chain-step-1" class="chain-step bg-gray-800/30 p-3 rounded-lg text-center opacity-30 transition-all duration-500">
+                            <div class="w-10 h-10 bg-purple-600 rounded-full mx-auto mb-2 flex items-center justify-center text-white font-bold">1</div>
+                            <h4 class="font-semibold text-purple-400 text-sm">ZK Circuit</h4>
+                            <p class="text-xs text-gray-400">Groth16 proof generation</p>
+                            <div class="mt-2 h-1 bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-purple-500 rounded-full transition-all duration-1000" style="width: 0%" id="progress-1"></div>
+                            </div>
+                        </div>
+                        
+                        <div id="chain-step-2" class="chain-step bg-gray-800/30 p-3 rounded-lg text-center opacity-30 transition-all duration-500">
+                            <div class="w-10 h-10 bg-blue-600 rounded-full mx-auto mb-2 flex items-center justify-center text-white font-bold">2</div>
+                            <h4 class="font-semibold text-blue-400 text-sm">P2P Broadcast</h4>
+                            <p class="text-xs text-gray-400">Gossip protocol distribution</p>
+                            <div class="mt-2 h-1 bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-blue-500 rounded-full transition-all duration-1000" style="width: 0%" id="progress-2"></div>
+                            </div>
+                        </div>
+                        
+                        <div id="chain-step-3" class="chain-step bg-gray-800/30 p-3 rounded-lg text-center opacity-30 transition-all duration-500">
+                            <div class="w-10 h-10 bg-green-600 rounded-full mx-auto mb-2 flex items-center justify-center text-white font-bold">3</div>
+                            <h4 class="font-semibold text-green-400 text-sm">Validation</h4>
+                            <p class="text-xs text-gray-400">Multi-party verification</p>
+                            <div class="mt-2 h-1 bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-green-500 rounded-full transition-all duration-1000" style="width: 0%" id="progress-3"></div>
+                            </div>
+                        </div>
+                        
+                        <div id="chain-step-4" class="chain-step bg-gray-800/30 p-3 rounded-lg text-center opacity-30 transition-all duration-500">
+                            <div class="w-10 h-10 bg-yellow-600 rounded-full mx-auto mb-2 flex items-center justify-center text-white font-bold">4</div>
+                            <h4 class="font-semibold text-yellow-400 text-sm">Consensus</h4>
+                            <p class="text-xs text-gray-400">Byzantine fault tolerance</p>
+                            <div class="mt-2 h-1 bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-yellow-500 rounded-full transition-all duration-1000" style="width: 0%" id="progress-4"></div>
+                            </div>
+                        </div>
+                        
+                        <div id="chain-step-5" class="chain-step bg-gray-800/30 p-3 rounded-lg text-center opacity-30 transition-all duration-500">
+                            <div class="w-10 h-10 bg-pink-600 rounded-full mx-auto mb-2 flex items-center justify-center text-white font-bold">5</div>
+                            <h4 class="font-semibold text-pink-400 text-sm">Finalization</h4>
+                            <p class="text-xs text-gray-400">Immutable commitment</p>
+                            <div class="mt-2 h-1 bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-pink-500 rounded-full transition-all duration-1000" style="width: 0%" id="progress-5"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                                     <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                     </svg>
                                 </div>
                                 <span class="text-sm text-gray-400 text-center">Network Consensus</span>
-                            </div>
-
-                            <div class="hidden md:block w-8 h-0.5 bg-gray-600 chain-connector" id="connector-4"></div>
-
-                            <div id="chain-step-5" class="chain-step flex flex-col items-center p-4 rounded-lg bg-gray-800 bg-opacity-50 min-w-[120px]">
-                                <div class="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center mb-2">
-                                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
-                                    </svg>
-                                </div>
-                                <span class="text-sm text-gray-400 text-center">Chain Addition</span>
                             </div>
                         </div>
 
@@ -1464,6 +1547,21 @@
         function showChainVisualization() {
             const chainViz = document.getElementById('chain-visualization');
             chainViz.classList.remove('hidden');
+            
+            // Hide all steps initially except the first one
+            const steps = ['chain-step-1', 'chain-step-2', 'chain-step-3', 'chain-step-4', 'chain-step-5'];
+            steps.forEach((stepId, index) => {
+                const step = document.getElementById(stepId);
+                if (index > 0) {
+                    step.style.display = 'none';
+                }
+            });
+            
+            // Reset status
+            document.getElementById('chain-status-text').textContent = 'Initializing...';
+            document.getElementById('chain-block-height').textContent = '#---';
+            document.getElementById('chain-tx-hash').textContent = 'Generating...';
+            
             // Scroll to make it visible
             chainViz.scrollIntoView({ behavior: 'smooth', block: 'center' });
             animateChainSteps();
@@ -1471,59 +1569,85 @@
 
         async function animateChainSteps() {
             const steps = ['chain-step-1', 'chain-step-2', 'chain-step-3', 'chain-step-4', 'chain-step-5'];
-            const connectors = ['connector-1', 'connector-2', 'connector-3', 'connector-4'];
-            const statusText = document.getElementById('chain-status-text');
-            const blockHeight = document.getElementById('chain-block-height');
-            const txHash = document.getElementById('chain-tx-hash');
-
+            const progressBars = ['progress-1', 'progress-2', 'progress-3', 'progress-4', 'progress-5'];
+            const statusMessages = [
+                'Generating ZK Proof...',
+                'Broadcasting to P2P Network...',
+                'Validating with Multi-party Verification...',
+                'Reaching Byzantine Consensus...',
+                'Finalizing Immutable Commitment...'
+            ];
+            
+            // Animate network metrics
+            animateNetworkMetrics();
+            
             for (let i = 0; i < steps.length; i++) {
-                // Activate current step
+                // Show current step
                 const step = document.getElementById(steps[i]);
-                step.classList.remove('opacity-50');
-                step.classList.add('bg-pink-500', 'bg-opacity-20', 'border', 'border-pink-500', 'border-opacity-30');
+                step.style.display = 'block';
+                step.classList.remove('opacity-30');
+                step.classList.add('opacity-100', 'transform', 'scale-105');
                 
-                const icon = step.querySelector('.w-12');
-                icon.classList.remove('bg-gray-600');
-                icon.classList.add('bg-pink-500');
-
                 // Update status
-                const statusMessages = [
-                    'Generating ZK Proof...',
-                    'Broadcasting to Network...',
-                    'Mining Block...',
-                    'Reaching Consensus...',
-                    'Adding to Chain...'
-                ];
-                statusText.textContent = statusMessages[i];
-                statusText.className = 'text-pink-400';
-
-                // Animate connector
-                if (i < connectors.length) {
-                    setTimeout(() => {
-                        const connector = document.getElementById(connectors[i]);
-                        connector.classList.remove('bg-gray-600');
-                        connector.classList.add('bg-pink-500');
-                    }, 1000);
+                document.getElementById('chain-status-text').textContent = statusMessages[i];
+                
+                // Animate progress bar
+                const progressBar = document.getElementById(progressBars[i]);
+                if (progressBar) {
+                    progressBar.style.width = '100%';
                 }
-
-                // Update block height and tx hash
-                if (i === 2) { // Mining step
-                    blockHeight.textContent = `#${Math.floor(Math.random() * 1000000) + 500000}`;
+                
+                // Update blockchain info at specific steps
+                if (i === 2) { // Validation step
+                    document.getElementById('chain-block-height').textContent = `#${Math.floor(Math.random() * 1000000) + 500000}`;
                 }
                 if (i === 4) { // Final step
-                    txHash.textContent = `0x${Math.random().toString(16).substr(2, 8)}...`;
-                    statusText.textContent = 'Successfully Added to Chain';
-                    statusText.className = 'text-green-400';
+                    document.getElementById('chain-tx-hash').textContent = `0x${Math.random().toString(16).substr(2, 8)}...${Math.random().toString(16).substr(2, 8)}`;
+                    document.getElementById('chain-status-text').textContent = 'Successfully Added to Chain';
+                    document.getElementById('chain-status-text').className = 'text-green-400';
                 }
-
+                
+                // Wait before next step
                 await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Reset scale
+                step.classList.remove('scale-105');
             }
+        }
+        
+        function animateNetworkMetrics() {
+            const metrics = [
+                { id: 'network-tps', values: ['2.1', '2.4', '2.7', '2.9', '2.7'] },
+                { id: 'network-nodes', values: ['1,203', '1,215', '1,247', '1,251', '1,247'] },
+                { id: 'network-latency', values: ['180ms', '165ms', '156ms', '142ms', '156ms'] },
+                { id: 'network-finality', values: ['97.2%', '98.1%', '98.7%', '99.1%', '98.7%'] }
+            ];
+            
+            metrics.forEach(metric => {
+                let index = 0;
+                const element = document.getElementById(metric.id);
+                if (element) {
+                    const interval = setInterval(() => {
+                        element.textContent = metric.values[index];
+                        index = (index + 1) % metric.values.length;
+                        if (index === 0) clearInterval(interval);
+                    }, 600);
+                }
+            });
         }
 
         // Encryption Visualization Functions
         function showEncryptionVisualization() {
             const encryptionViz = document.getElementById('encryption-visualization');
             encryptionViz.classList.remove('hidden');
+            
+            // Hide all steps initially
+            const steps = ['crypto-step-1', 'crypto-step-2', 'crypto-step-3', 'crypto-step-4'];
+            steps.forEach(stepId => {
+                const step = document.getElementById(stepId);
+                step.classList.add('hidden');
+            });
+            
             // Scroll to make it visible
             encryptionViz.scrollIntoView({ behavior: 'smooth', block: 'center' });
             animateEncryptionSteps();
@@ -1533,9 +1657,10 @@
             const steps = ['crypto-step-1', 'crypto-step-2', 'crypto-step-3', 'crypto-step-4'];
             
             for (let i = 0; i < steps.length; i++) {
+                // Show current step
                 const step = document.getElementById(steps[i]);
-                step.classList.remove('opacity-50');
-                step.classList.add('border', 'border-pink-500', 'border-opacity-30');
+                step.classList.remove('hidden', 'opacity-50');
+                step.classList.add('opacity-100', 'border', 'border-pink-500', 'border-opacity-30');
 
                 // Animate hash generation with typewriter effect
                 if (i === 0) {
@@ -1545,12 +1670,13 @@
                     await typewriterEffect('commitment-hash', generateShortHash());
                 } else if (i === 2) {
                     await typewriterEffect('proof-hash', generateShortHash());
+                    document.getElementById('circuit-type').textContent = 'Groth16 (Simulated)';
                 } else if (i === 3) {
-                    const epoch = Math.floor(Date.now() / (1000 * 60 * 60));
-                    document.getElementById('current-epoch').textContent = epoch;
                     await typewriterEffect('nullifier-hash', generateShortHash());
+                    document.getElementById('current-epoch').textContent = Math.floor(Date.now() / (1000 * 60 * 60));
                 }
 
+                // Wait before showing next step
                 await new Promise(resolve => setTimeout(resolve, 1500));
             }
         }
@@ -1591,6 +1717,20 @@
 
         function showSuccessResult(score) {
             document.getElementById('success-result').classList.remove('hidden');
+            
+            // Save verification data to localStorage (45 min session)
+            const verificationData = {
+                name: extractedData.name || 'Anonymous User',
+                organization: extractedData.organization || 'Verified Organization',
+                role: extractedData.role || 'Verified Role',
+                documentType: extractedData.documentType || 'id_card',
+                verificationScore: score,
+                timestamp: Date.now(),
+                verified: true,
+                expiresAt: Date.now() + (45 * 60 * 1000) // 45 minutes
+            };
+            
+            localStorage.setItem('anonshare_verification_data', JSON.stringify(verificationData));
             
             // Use actual extracted data instead of placeholders
             let displayName = 'Anonymous User';
