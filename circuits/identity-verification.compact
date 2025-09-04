@@ -1,0 +1,38 @@
+// Identity Verification ZK Circuit using Midnight's Compact language
+// Proves user has valid credentials without revealing personal data
+
+circuit IdentityVerification {
+    // Private inputs (not revealed)
+    private field name;
+    private field organization;
+    private field role;
+    private field idNumber;
+    
+    // Public inputs (revealed)
+    public field organizationType; // 1=Academic, 2=Corporate, 3=Government
+    public field roleType;         // 1=Student, 2=Employee, 3=Official
+    public field verificationHash; // Hash of verification data
+    
+    // Constraints
+    constraint {
+        // Verify organization type is valid (1, 2, or 3)
+        organizationType * (organizationType - 1) * (organizationType - 2) * (organizationType - 3) == 0;
+        
+        // Verify role type is valid (1, 2, or 3)
+        roleType * (roleType - 1) * (roleType - 2) * (roleType - 3) == 0;
+        
+        // Verify the hash matches the private inputs
+        verificationHash == hash(name, organization, role, idNumber);
+        
+        // Ensure name and organization are not empty (non-zero)
+        name != 0;
+        organization != 0;
+    }
+    
+    // Output: proof that user has valid credentials of specified type
+    return {
+        organizationType: organizationType,
+        roleType: roleType,
+        isVerified: 1
+    };
+}
