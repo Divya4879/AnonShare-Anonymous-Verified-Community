@@ -10,6 +10,10 @@
     <script src="https://cdn.jsdelivr.net/npm/opencv.js@1.2.1/opencv.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
     <!-- Configuration and AI Integration -->
+    <script>
+        // Create fallback if env-inject.js fails to load
+        window.ENV = window.ENV || {};
+    </script>
     <script src="env-inject.js" onerror="console.log('env-inject.js not found')"></script>
     <script src="config.js"></script>
     <script src="groq-ai.js"></script>

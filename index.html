@@ -176,7 +176,11 @@
     </footer>
 
     <!-- Environment Variables (injected during deployment) -->
-    <script src="env-inject.js" onerror="console.log('env-inject.js not found - using .env fallback')"></script>
+    <script>
+        // Create fallback if env-inject.js fails to load
+        window.ENV = window.ENV || {};
+    </script>
+    <script src="env-inject.js" onerror="console.log('env-inject.js not found - using fallback')"></script>
     <!-- Configuration -->
     <script src="config.js"></script>
     <!-- Midnight Network Integration -->
