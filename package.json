@@ -4,16 +4,15 @@
   "description": "Privacy-first identity verification and anonymous community platform built on Midnight Network",
   "main": "index.html",
   "scripts": {
-    "start": "npx serve . -l 3000",
-    "dev": "npx serve . -l 3000",
-    "deploy": "node scripts/deploy.js"
-  },
-  "dependencies": {
-    "@midnight-ntwrk/midnight-js-sdk": "^1.0.0",
-    "@midnight-ntwrk/compact-runtime": "^1.0.0"
+    "start": "npx http-server . -p 8000 -c-1",
+    "dev": "npm start",
+    "build": "echo 'Static site - no build needed'",
+    "deploy": "netlify deploy --prod",
+    "deploy:preview": "netlify deploy"
   },
   "devDependencies": {
-    "serve": "^14.2.1"
+    "http-server": "^14.1.1",
+    "netlify-cli": "^17.38.1"
   },
   "keywords": [
     "zero-knowledge",
