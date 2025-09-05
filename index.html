@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VerifiedVoices - Anonymous Verified Community Platform</title>
+    <meta name="description" content="Privacy-first identity verification platform using zero-knowledge proofs for anonymous community participation">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23ec4899'/><path d='M30 40h40v20H30z' fill='white' opacity='0.9'/><circle cx='35' cy='45' r='3' fill='%23ec4899'/><path d='M42 43h25v4H42z' fill='%23ec4899'/><path d='M42 50h20v3H42z' fill='%23ec4899'/><circle cx='50' cy='70' r='8' fill='white' opacity='0.3'/><path d='M45 67l3 3 7-7' stroke='white' stroke-width='2' fill='none'/></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -41,8 +42,11 @@
     </style>
 </head>
 <body class="gradient-bg min-h-screen text-white">
+    <!-- Skip to main content link for screen readers -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-pink-600 text-white px-4 py-2 rounded-md z-50">Skip to main content</a>
+    
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 bg-black bg-opacity-30 backdrop-blur-md border-b border-pink-500 border-opacity-20">
+    <nav class="fixed top-0 w-full z-50 bg-black bg-opacity-30 backdrop-blur-md border-b border-pink-500 border-opacity-20" role="navigation" aria-label="Main navigation">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
@@ -74,46 +78,48 @@
     </nav>
 
     <!-- Hero Section -->
-    <main class="pt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <main id="main-content" class="pt-16" role="main">
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20" aria-labelledby="hero-heading">
             <div class="text-center">
-                <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                <h1 id="hero-heading" class="text-4xl md:text-6xl font-bold mb-6">
                     AnonShare <span class="text-gradient">Anonymous</span><br>
                     Verified Community
                 </h1>
                 <p class="text-xl md:text-2xl text-pink-200 mb-8 max-w-3xl mx-auto">
                     Share authentic insights about your workplace, university, or country anonymously while proving your genuine connection through zero-knowledge proofs.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="verify.html" class="btn-gradient text-white px-8 py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity">
+                <div class="flex flex-col sm:flex-row gap-4 justify-center" role="group" aria-label="Main actions">
+                    <a href="verify.html" class="btn-gradient text-white px-8 py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity focus:ring-4 focus:ring-pink-500 focus:outline-none" aria-describedby="verify-desc">
                         Get Verified Now
                     </a>
-                    <a href="posts.html" class="border-2 border-pink-500 text-pink-200 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-pink-500 hover:bg-opacity-20 transition-colors">
+                    <span id="verify-desc" class="sr-only">Start the identity verification process using zero-knowledge proofs</span>
+                    <a href="posts.html" class="border-2 border-pink-500 text-pink-200 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-pink-500 hover:bg-opacity-20 transition-colors focus:ring-4 focus:ring-pink-500 focus:outline-none" aria-describedby="community-desc">
                         View Community
                     </a>
+                    <span id="community-desc" class="sr-only">Browse anonymous posts from verified community members</span>
                 </div>
             </div>
-        </div>
+        </section>
 
         <!-- Features Section -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20" aria-labelledby="features-heading">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gradient mb-4">Why Choose VerifyID?</h2>
+                <h2 id="features-heading" class="text-3xl md:text-4xl font-bold text-gradient mb-4">Why Choose VerifyID?</h2>
                 <p class="text-xl text-pink-200">Advanced AI-powered verification with zero compromise on security</p>
             </div>
             
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="card-gradient p-8 rounded-xl text-center">
-                    <div class="w-16 h-16 btn-gradient rounded-full flex items-center justify-center mx-auto mb-4">
+            <div class="grid md:grid-cols-3 gap-8" role="list">
+                <article class="card-gradient p-8 rounded-xl text-center" role="listitem">
+                    <div class="w-16 h-16 btn-gradient rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true">
                         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
                     <h3 class="text-xl font-bold text-gradient mb-3">AI-Powered Verification</h3>
                     <p class="text-pink-200">Advanced OCR and image analysis to verify authentic ID cards with 95+ accuracy</p>
-                </div>
+                </article>
 
-                <div class="card-gradient p-8 rounded-xl text-center">
+                <article class="card-gradient p-8 rounded-xl text-center" role="listitem">
                     <div class="w-16 h-16 btn-gradient rounded-full flex items-center justify-center mx-auto mb-4">
                         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
