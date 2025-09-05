@@ -1,274 +1,210 @@
-# 🌙 VerifiedVoices - Anonymous Verified Community Platform
+# VerifiedVoices
 
-[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-anonshare--verified--community.netlify.app-brightgreen)](https://anonshare-verified-community.netlify.app)
-[![Midnight Network](https://img.shields.io/badge/Built_on-Midnight_Network-purple)](https://midnight.network)
-[![Zero Knowledge](https://img.shields.io/badge/Privacy-Zero_Knowledge_Proofs-blue)](https://en.wikipedia.org/wiki/Zero-knowledge_proof)
-[![License](https://img.shields.io/badge/License-Apache_2.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Accessibility](https://img.shields.io/badge/Accessibility-WCAG_2.1_AA-orange)](https://www.w3.org/WAI/WCAG21/quickref/)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://anonshare-verified-community.netlify.app)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Midnight Network](https://img.shields.io/badge/blockchain-Midnight%20Network-purple)](https://midnight.network)
 
-> **Speak truth without fear. Prove credentials without revealing identity.**
+Anonymous identity verification platform using zero-knowledge proofs for privacy-preserving community participation.
 
-VerifiedVoices is a privacy-first platform that enables anonymous participation in verified communities. Users can cryptographically prove their organizational affiliation (university, company, government) without exposing personal information, creating safe spaces for authentic discourse.
+## Overview
 
-## 🎯 **The Problem We Solve**
+VerifiedVoices enables users to prove organizational credentials (university, company, government) without revealing personal information. Built on Midnight Network's zero-knowledge infrastructure with client-side cryptographic processing.
 
-### The Doxxing Dilemma
-In today's digital world, speaking truth often comes with devastating consequences:
+**Key Features:**
+- Zero-knowledge identity verification using Compact circuits
+- Anonymous community participation with verified credentials
+- Client-side document processing with OCR analysis
+- Time-based rate limiting via cryptographic nullifiers
+- WCAG 2.1 AA accessibility compliance
 
-- **Students** can't review professors honestly without grade retaliation
-- **Employees** fear career suicide when reporting workplace issues  
-- **Whistleblowers** risk personal safety when exposing misconduct
-- **Citizens** face persecution for criticizing government policies
+## Architecture
 
-Traditional platforms force an impossible choice: **credibility requires identity exposure, but anonymity lacks verification**.
-
-### Real-World Impact
-- 73% of employees have witnessed workplace misconduct but stayed silent
-- 89% of students avoid honest course feedback due to retaliation fears
-- Whistleblower cases have increased 300% but reporting rates remain low
-- Anonymous platforms are flooded with unverified, unreliable content
-
-## 🚀 **Our Solution: Zero-Knowledge Verification**
-
-VerifiedVoices breaks the false dichotomy between credibility and anonymity using **advanced cryptographic proofs**.
-
-### How It Works
 ```
-Document Upload → AI Analysis → ZK Proof Generation → Anonymous Verification
-     ↓              ↓              ↓                    ↓
-Personal Data → Organizational → Mathematical Proof → Verified Badge
-Never Stored    Context Only     (No Personal Info)   "Verified Student"
+Document Upload → OCR Analysis → ZK Proof Generation → Anonymous Verification
+     ↓               ↓              ↓                    ↓
+  Browser Only   Extract Metadata   Compact Circuit    Verified Session
 ```
 
-### Core Innovation: Selective Disclosure
-- **Prove**: "I am a verified student at a university"
-- **Hide**: Name, student ID, specific university, personal details
-- **Enable**: Anonymous but credible participation in academic discussions
+### Components
 
-## 🏗️ **Technical Architecture**
+- **Frontend**: Vanilla JavaScript, Tailwind CSS
+- **ZK Circuits**: Midnight Network Compact language
+- **Document Analysis**: Groq API for OCR processing
+- **Data Storage**: Firebase for anonymous community data
+- **Deployment**: Netlify with environment injection
 
-### Zero-Knowledge Circuits (Midnight Network)
-```compact
-circuit IdentityVerification {
-    private field name, organization, idNumber;     // Hidden forever
-    public field organizationType, roleType;       // Generic categories only
-    public field nullifier;                        // Spam prevention
-    
-    constraint {
-        nullifier == hash(userSecret, timeEpoch);   // Rate limiting
-        organizationType ∈ {Academic, Corporate, Government};
-    }
-}
-```
-
-### Privacy Guarantees
-- **Client-Side Processing**: Personal data never leaves your browser
-- **SHA-256 Commitments**: Cryptographically binding and hiding
-- **Time-Based Nullifiers**: Prevent spam while preserving anonymity
-- **Session Management**: 60-minute verified access, then automatic expiry
-
-### Tech Stack
-- **Frontend**: Vanilla JavaScript, Tailwind CSS, WCAG 2.1 AA compliant
-- **Blockchain**: Midnight Network testnet integration
-- **AI/ML**: Groq API for document OCR and analysis
-- **Database**: Firebase for anonymous community data
-- **Deployment**: Netlify with environment variable injection
-
-## 🎮 **Live Demo & Features**
-
-### 🔗 **Try It Now**: [anonshare-verified-community.netlify.app](https://anonshare-verified-community.netlify.app)
-
-### Core Features
-1. **Document Verification** - Upload ID cards, transcripts, employee badges
-2. **Real-Time ZK Visualization** - Watch your data transform into cryptographic proofs
-3. **Anonymous Community** - Post as "Verified Student" or "Verified Employee"
-4. **Rate Limiting** - One verification per hour prevents spam
-5. **Reputation Building** - Gain trust through consistent anonymous behavior
-
-### User Journey
-```
-Landing Page → Upload Document → ZK Proof Generation → Anonymous Community
-    ↓              ↓                    ↓                     ↓
-Learn About → Drag & Drop ID → Watch Crypto Magic → Post Anonymously
-Privacy       (15 seconds)     (Real-time animation)  (60-min session)
-```
-
-## 🛠️ **Quick Start Guide**
+## Installation
 
 ### Prerequisites
-- Node.js 16+
-- Modern browser with WebCrypto API
-- Optional: Groq API key, Firebase account
 
-### Installation
+- Node.js 16+
+- Modern browser with WebCrypto API support
+
+### Setup
+
 ```bash
-# Clone repository
 git clone https://github.com/Divya4879/AnonShare-Anonymous-Verified-Community.git
 cd AnonShare-Anonymous-Verified-Community
-
-# Install dependencies
 npm install
-
-# Start development server
 npm run dev
-# Opens http://localhost:8000
 ```
 
-### Environment Setup (Optional)
-```bash
-# Copy environment template
-cp .env.example .env
+The application will be available at `http://localhost:8000`.
 
-# Add your API keys (optional - demo works without them)
+### Environment Configuration
+
+```bash
+cp .env.example .env
+```
+
+Optional API keys for enhanced functionality:
+```env
 GROQ_API_KEY=your_groq_api_key
 FIREBASE_API_KEY=your_firebase_key
 ```
 
-### Deployment
-```bash
-# Deploy to Netlify
-npm run deploy
+## Usage
 
-# Or deploy to any static hosting service
-npm run build
+### Basic Verification Flow
+
+1. **Upload Document**: Drag and drop official ID (student card, employee badge, government ID)
+2. **Processing**: Client-side OCR extracts organizational metadata
+3. **ZK Proof**: Generate cryptographic proof without revealing personal data
+4. **Community Access**: 60-minute anonymous session with verified status
+
+### API Reference
+
+#### Core Functions
+
+```javascript
+// Generate ZK proof from document data
+await midnight.generateZKProof(verificationData)
+
+// Create anonymous session
+const session = await createAnonymousSession(proof)
+
+// Submit anonymous post
+await submitPost(content, verificationProof)
 ```
 
-## 🔐 **Privacy & Security**
+#### Circuit Interface
 
-### What We Store (On-Chain)
-- ✅ Anonymous ZK proofs (cryptographic hashes only)
-- ✅ Organization types (Academic/Corporate/Government)
-- ✅ Verification timestamps and scores
-- ✅ Rate-limiting nullifiers (unlinkable to identity)
+```compact
+circuit IdentityVerification {
+    private field name, organization, idNumber;
+    public field organizationType, roleType, nullifier;
+    
+    constraint {
+        nullifier == hash(userSecret, timeEpoch);
+        organizationType ∈ {1, 2, 3}; // Academic, Corporate, Government
+    }
+}
+```
 
-### What We Never Store
-- ❌ Real names, photos, addresses, phone numbers
-- ❌ Specific organization names or job titles  
-- ❌ Document numbers or personal identifiers
-- ❌ Any personally identifiable information
+## Privacy Model
 
-### Security Measures
-- **Client-Side Processing**: All sensitive operations in browser
-- **Cryptographic Commitments**: Mathematical privacy guarantees
-- **Rate Limiting**: Prevents spam without tracking users
-- **Session Expiry**: Automatic privacy protection after 60 minutes
+### Data Processing
+- **Client-side only**: Personal data never transmitted to servers
+- **Cryptographic hashing**: SHA-256 commitments for privacy guarantees
+- **Selective disclosure**: Prove organizational type without revealing specifics
 
-## 🌍 **Real-World Applications**
+### Storage
+- **On-chain**: Anonymous ZK proofs, organization types, timestamps
+- **Never stored**: Names, addresses, document numbers, personal identifiers
 
-### 🎓 **Academic Transparency**
-- Anonymous course reviews and professor feedback
-- Safe reporting of academic misconduct
-- Verified student discussions on sensitive topics
+### Rate Limiting
+- Time-based nullifiers prevent spam (1 verification/hour)
+- Cryptographically unlinkable across sessions
+- Automatic session expiry after 60 minutes
 
-### 🏢 **Workplace Accountability**  
-- Anonymous employee surveys and feedback
-- Safe reporting of harassment or discrimination
-- Verified professional networking without exposure
+## Development
 
-### 🏛️ **Civic Engagement**
-- Anonymous citizen feedback to government
-- Safe political discourse and debate
-- Verified community organizing and activism
+### Project Structure
 
-### 🩺 **Healthcare & Research**
-- Anonymous medical professional discussions
-- Safe reporting of patient safety issues
-- Verified research collaboration and peer review
+```
+├── circuits/
+│   └── identity-verification.compact    # ZK circuit definition
+├── contracts/
+│   └── VerificationRegistry.sol         # Smart contract interface
+├── src/
+│   ├── midnight-integration.js          # Blockchain integration
+│   ├── firebase-config.js               # Anonymous data storage
+│   └── groq-ai.js                       # Document analysis
+├── index.html                           # Landing page
+├── verify.html                          # Verification interface
+└── posts.html                           # Community platform
+```
 
-## 📊 **Project Metrics**
+### Testing
 
-### Technical Achievements
-- **15-second verification** time with real-time visualization
-- **95%+ OCR accuracy** for document analysis
-- **WCAG 2.1 AA compliance** for universal accessibility
-- **Zero personal data storage** with mathematical guarantees
-
-### Innovation Metrics
-- **First implementation** of time-based nullifiers for rate limiting
-- **Novel application** of selective disclosure for community platforms
-- **Advanced integration** of Midnight Network ZK circuits
-- **Production-ready** privacy architecture
-
-## 🤝 **Contributing**
-
-We welcome contributions from privacy advocates, blockchain developers, and UX designers!
-
-### Development Setup
 ```bash
-# Fork the repository
-git clone https://github.com/yourusername/AnonShare-Anonymous-Verified-Community.git
-
-# Create feature branch
-git checkout -b feature/your-feature-name
-
-# Make changes and test
+# Run local development server
 npm run dev
 
-# Submit pull request
-git push origin feature/your-feature-name
+# Test ZK proof generation
+node scripts/test-circuits.js
+
+# Validate accessibility compliance
+npm run test:a11y
 ```
 
+### Building
+
+```bash
+# Build for production
+npm run build
+
+# Deploy to Netlify
+npm run deploy
+```
+
+## Contributing
+
+### Development Setup
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Make changes and test locally
+4. Submit a pull request
+
+### Code Style
+
+- Follow existing JavaScript patterns
+- Maintain WCAG 2.1 AA compliance
+- Add tests for new ZK circuit functionality
+- Update documentation for API changes
+
 ### Areas for Contribution
-- Additional document types (passports, professional licenses)
-- Multi-language support and internationalization
-- Mobile app development (React Native/Flutter)
+
+- Additional document type support
+- Mobile application development
 - Advanced reputation algorithms
-- Integration with other ZK platforms
+- Multi-language internationalization
 
-## 📄 **License & Legal**
+## Security
 
-This project is licensed under the **Apache License 2.0** - see the [LICENSE](LICENSE) file for details.
+### Vulnerability Reporting
 
-### Open Source Commitment
-- ✅ Fully open source codebase
-- ✅ Transparent privacy architecture  
-- ✅ Community-driven development
-- ✅ No vendor lock-in or proprietary dependencies
+Report security vulnerabilities to [security@verifiedvoices.com](mailto:security@verifiedvoices.com).
 
-## 🏆 **Recognition & Awards**
+### Security Features
 
-- 🥇 **Midnight Network "Privacy First" Challenge** - Submission
-- 🎯 **Focus**: Privacy-preserving applications using zero-knowledge proofs
-- 💰 **Prize Category**: "Protect That Data" ($3,500 USD)
-- 🌟 **Innovation**: First anonymous verified community platform
+- Client-side cryptographic processing
+- Zero-knowledge proof verification
+- Rate limiting via nullifiers
+- Automatic session expiry
 
-## 📞 **Contact & Support**
+## License
 
-### Creator
-**Divya** - Privacy Engineer & Blockchain Developer
-- 🐦 Twitter: [@TechDsa](https://x.com/TechDsa)
-- 💼 LinkedIn: [Connect with Divya](https://linkedin.com/in/divya-tech)
-- 📧 Email: [Contact for collaborations](mailto:your-email@example.com)
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.
 
-### Community
-- 🌐 **Live Demo**: [anonshare-verified-community.netlify.app](https://anonshare-verified-community.netlify.app)
-- 📚 **Documentation**: [GitHub Wiki](https://github.com/Divya4879/AnonShare-Anonymous-Verified-Community/wiki)
-- 🐛 **Issues**: [GitHub Issues](https://github.com/Divya4879/AnonShare-Anonymous-Verified-Community/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/Divya4879/AnonShare-Anonymous-Verified-Community/discussions)
+## Acknowledgments
+
+- [Midnight Network](https://midnight.network) for zero-knowledge infrastructure
+- [Groq](https://groq.com) for AI-powered document analysis
+- [Firebase](https://firebase.google.com) for anonymous data storage
 
 ---
 
-## 💝 **A Message from the Creator**
-
-This project was born from a simple belief: **everyone deserves to speak truth without fear**.
-
-In a world where honesty often comes with devastating consequences, VerifiedVoices offers something revolutionary - the mathematical guarantee that you can be heard without being hunted.
-
-Every line of code was written with real people in mind. The graduate student afraid to report research misconduct. The employee witnessing harassment but needing their job. The citizen wanting to expose corruption but fearing retaliation.
-
-**Your voice matters. Your truth matters. Your safety matters.**
-
-VerifiedVoices isn't just a platform - it's a movement toward radical transparency protected by unbreakable mathematics. Together, we're building a world where speaking truth doesn't require sacrificing your future.
-
-*Made with 💜 by [Divya](https://x.com/TechDsa) • Powered by sleepless nights and zero-knowledge magic ✨*
-
----
-
-<div align="center">
-
-**⭐ Star this repository if you believe in privacy-first technology!**
-
-[![GitHub stars](https://img.shields.io/github/stars/Divya4879/AnonShare-Anonymous-Verified-Community?style=social)](https://github.com/Divya4879/AnonShare-Anonymous-Verified-Community/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/Divya4879/AnonShare-Anonymous-Verified-Community?style=social)](https://github.com/Divya4879/AnonShare-Anonymous-Verified-Community/network/members)
-
-</div>
+**Maintainer**: [@Divya4879](https://github.com/Divya4879)  
+**Demo**: [anonshare-verified-community.netlify.app](https://anonshare-verified-community.netlify.app)
