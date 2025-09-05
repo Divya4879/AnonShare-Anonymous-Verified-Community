@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Community Posts - VerifyID Platform</title>
+    <title>Community Posts - VerifiedVoices</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
@@ -66,12 +66,12 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
-                    <h1 class="text-2xl font-bold text-gradient">VerifyID</h1>
+                    <h1 class="text-2xl font-bold text-gradient">VerifiedVoices</h1>
                 </div>
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-4">
                         <a href="index.html" class="text-pink-200 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Home</a>
-                        <a href="verify.html" class="text-pink-200 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Verify ID</a>
+                        <a href="verify.html" class="text-pink-200 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Verify Identity</a>
                         <a href="posts.html" class="text-white bg-pink-500 bg-opacity-20 px-3 py-2 rounded-md text-sm font-medium">Community</a>
                     </div>
                 </div>
@@ -87,7 +87,7 @@
         <div id="mobile-menu" class="md:hidden hidden bg-black bg-opacity-50">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <a href="index.html" class="text-pink-200 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
-                <a href="verify.html" class="text-pink-200 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Verify ID</a>
+                <a href="verify.html" class="text-pink-200 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Verify Identity</a>
                 <a href="posts.html" class="text-white bg-pink-500 bg-opacity-20 block px-3 py-2 rounded-md text-base font-medium">Community</a>
             </div>
         </div>
@@ -247,6 +247,16 @@
                     userName.textContent = `Verified User`;
                     userBadge.textContent = `Verified ${data.role} at ${data.organization}`;
                     
+                    // Set currentUser for interactions
+                    currentUser = {
+                        id: data.anonymousId || 'anonymous_' + Date.now(),
+                        role: data.role,
+                        organization: data.organization,
+                        verificationScore: data.verificationScore
+                    };
+                    
+                    console.log('User verified and loaded:', currentUser);
+                    
                     if (data.verificationScore) {
                         userBadge.textContent += ` • Score: ${data.verificationScore}/10`;
                     }
@@ -257,6 +267,15 @@
                 } else {
                     document.getElementById('user-name').textContent = 'Verified User';
                     document.getElementById('user-badge').textContent = 'Please verify your identity to post';
+                    
+                    // For testing - set a temporary user
+                    currentUser = {
+                        id: 'test_user_' + Date.now(),
+                        role: 'Student',
+                        organization: 'Test University',
+                        verificationScore: 8
+                    };
+                    console.log('Test user set for development:', currentUser);
                 }
             } catch (error) {
                 console.error('Error loading verification data:', error);
@@ -297,8 +316,13 @@
 
         // Initialize page with Midnight integration
         document.addEventListener('DOMContentLoaded', async function() {
-            // Initialize Firebase for posts only
+            // Initialize Firebase for posts only (using firebase-config.js)
             firebaseInitialized = initializeFirebase();
+            
+            // Debug Firebase status
+            console.log('Firebase initialization result:', firebaseInitialized);
+            console.log('Firebase config available:', !!CONFIG.FIREBASE_CONFIG);
+            console.log('Firebase API key present:', !!CONFIG.FIREBASE_CONFIG?.apiKey);
             
             // Load verification data from localStorage
             loadUserVerificationData();
@@ -315,7 +339,7 @@
             }
             
             checkVerificationStatus();
-            await loadPosts();
+            renderPosts();
             setupEventListeners();
         });
 
@@ -787,12 +811,17 @@
                     replies: []
                 };
                 
-                // Save to Firebase
-                if (db) {
-                    const docRef = await db.collection('posts').add(newPost);
-                    newPost.id = docRef.id;
-                    console.log('Post saved to Firebase:', docRef.id);
-                } else {
+                // Save to Firebase using StorageManager
+                try {
+                    const savedPost = await StorageManager.savePost(newPost);
+                    if (savedPost && savedPost.id) {
+                        newPost.id = savedPost.id;
+                    } else {
+                        newPost.id = Date.now().toString();
+                    }
+                    console.log('Post saved with ID:', newPost.id);
+                } catch (error) {
+                    console.error('Failed to save post:', error);
                     newPost.id = Date.now().toString();
                 }
                 
@@ -869,8 +898,8 @@
                             <div class="flex items-center justify-between text-sm text-pink-300 mb-3">
                                 <span>${timeAgo}</span>
                                 <div class="flex items-center space-x-4">
-                                    <button onclick="toggleLike('${post.id}')" class="flex items-center space-x-1 hover:text-pink-400 transition-colors">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <button onclick="toggleLike('${post.id}')" id="like-btn-${post.id}" class="flex items-center space-x-1 hover:text-pink-400 transition-colors ${currentUser && post.likedBy && post.likedBy.includes(currentUser.id || 'anonymous') ? 'text-red-400' : ''}">
+                                        <svg class="w-4 h-4" fill="${currentUser && post.likedBy && post.likedBy.includes(currentUser.id || 'anonymous') ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                                         </svg>
                                         <span id="like-count-${post.id}">${post.likes || 0}</span>
@@ -918,32 +947,50 @@
                 return;
             }
             
-            const post = posts.find(p => p.id === postId);
-            if (!post) return;
-            
             const userId = currentUser.id || 'anonymous';
-            if (!post.likedBy) post.likedBy = [];
+            const post = posts.find(p => p.id == postId);
+            if (!post || !db) return;
             
-            const hasLiked = post.likedBy.includes(userId);
-            
-            if (hasLiked) {
-                // Unlike
-                post.likes = Math.max(0, (post.likes || 0) - 1);
-                post.likedBy = post.likedBy.filter(id => id !== userId);
-            } else {
-                // Like
-                post.likes = (post.likes || 0) + 1;
-                post.likedBy.push(userId);
+            try {
+                const postRef = db.collection('posts').doc(postId);
+                const likedBy = post.likedBy || [];
+                const hasLiked = likedBy.includes(userId);
+                
+                if (hasLiked) {
+                    await postRef.update({
+                        likes: Math.max(0, (post.likes || 0) - 1),
+                        likedBy: likedBy.filter(id => id !== userId)
+                    });
+                    post.likes = Math.max(0, (post.likes || 0) - 1);
+                    post.likedBy = likedBy.filter(id => id !== userId);
+                } else {
+                    await postRef.update({
+                        likes: (post.likes || 0) + 1,
+                        likedBy: [...likedBy, userId]
+                    });
+                    post.likes = (post.likes || 0) + 1;
+                    post.likedBy = [...likedBy, userId];
+                }
+                
+                // Update UI
+                const likeCount = document.getElementById(`like-count-${postId}`);
+                const likeBtn = document.getElementById(`like-btn-${postId}`);
+                const likeSvg = likeBtn?.querySelector('svg');
+                
+                if (likeCount) likeCount.textContent = post.likes;
+                
+                if (likeBtn && likeSvg) {
+                    if (post.likedBy.includes(userId)) {
+                        likeBtn.classList.add('text-red-400');
+                        likeSvg.setAttribute('fill', 'currentColor');
+                    } else {
+                        likeBtn.classList.remove('text-red-400');
+                        likeSvg.setAttribute('fill', 'none');
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to save like:', error);
             }
-            
-            // Update UI
-            const likeCount = document.getElementById(`like-count-${postId}`);
-            if (likeCount) {
-                likeCount.textContent = post.likes;
-            }
-            
-            // Save to Firebase
-            await StorageManager.likePost(postId, userId);
         }
 
         function toggleReply(postId) {
@@ -1000,18 +1047,23 @@
                 timestamp: new Date().toISOString()
             };
             
-            // Add to local post
-            const post = posts.find(p => p.id === postId);
-            if (post) {
-                if (!post.replies) post.replies = [];
-                post.replies.push(reply);
+            const post = posts.find(p => p.id == postId);
+            if (!post || !db) return;
+            
+            try {
+                const postRef = db.collection('posts').doc(postId);
+                const replies = post.replies || [];
                 
-                // Save to Firebase
-                await StorageManager.addReply(postId, reply);
+                await postRef.update({
+                    replies: [...replies, reply]
+                });
                 
-                // Update UI
+                post.replies = [...replies, reply];
+                replyText.value = '';
                 renderPosts();
                 showNotification('Reply added!', 'success');
+            } catch (error) {
+                console.error('Failed to save reply:', error);
             }
         }
 
@@ -1061,49 +1113,6 @@
             }, 3000);
         }
 
-        // Like/Reply Functions
-        function toggleLike(postId) {
-            const post = posts.find(p => p.id == postId);
-            if (post) {
-                post.likes = (post.likes || 0) + 1;
-                document.getElementById(`like-count-${postId}`).textContent = post.likes;
-                showNotification('Post liked!', 'success');
-            }
-        }
-
-        function toggleReply(postId) {
-            const replyForm = document.getElementById(`reply-form-${postId}`);
-            replyForm.classList.toggle('hidden');
-            if (!replyForm.classList.contains('hidden')) {
-                document.getElementById(`reply-text-${postId}`).focus();
-            }
-        }
-
-        function cancelReply(postId) {
-            document.getElementById(`reply-form-${postId}`).classList.add('hidden');
-            document.getElementById(`reply-text-${postId}`).value = '';
-        }
-
-        function submitReply(postId) {
-            const replyText = document.getElementById(`reply-text-${postId}`).value.trim();
-            if (!replyText) return;
-
-            const post = posts.find(p => p.id == postId);
-            if (post) {
-                if (!post.replies) post.replies = [];
-                
-                const reply = {
-                    id: Date.now(),
-                    author: 'Verified User',
-                    content: replyText,
-                    timestamp: new Date().toISOString()
-                };
-                
-                post.replies.push(reply);
-                displayPosts(); // Refresh the display
-                showNotification('Reply added!', 'success');
-            }
-        }
     </script>
 </body>
 </html>

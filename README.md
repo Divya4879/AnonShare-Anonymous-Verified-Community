@@ -1,4 +1,4 @@
-# 🌙 AnonShare - Privacy-First Verified Communities
+# 🌙 VerifiedVoices - Privacy-First Verified Communities
 
 [![Midnight Network](https://img.shields.io/badge/Built%20on-Midnight%20Network-purple)](https://midnight.network)
 [![Zero Knowledge](https://img.shields.io/badge/Privacy-Zero%20Knowledge%20Proofs-blue)](https://en.wikipedia.org/wiki/Zero-knowledge_proof)
@@ -7,7 +7,7 @@
 
 > **Prove your credentials without revealing your identity. Participate safely in verified communities.**
 
-AnonShare enables anonymous participation in verified communities through advanced zero-knowledge cryptography. Users can prove their organizational affiliation (university, company, government) without exposing personal information, creating safe spaces for sensitive discussions.
+VerifiedVoices enables anonymous participation in verified communities through advanced zero-knowledge cryptography. Users can prove their organizational affiliation (university, company, government) without exposing personal information, creating safe spaces for sensitive discussions.
 
 ## 🎯 Problem Solved
 
