@@ -1,5 +1,5 @@
-// Identity Verification ZK Circuit using Midnight's Compact language
-// Proves user has valid credentials without revealing personal data
+// Advanced Identity Verification ZK Circuit using Midnight's Compact language
+// Proves user has valid credentials with rate limiting nullifiers
 
 circuit IdentityVerification {
     // Private inputs (not revealed)
@@ -7,11 +7,14 @@ circuit IdentityVerification {
     private field organization;
     private field role;
     private field idNumber;
+    private field userSecret;      // For nullifier generation
     
     // Public inputs (revealed)
     public field organizationType; // 1=Academic, 2=Corporate, 3=Government
     public field roleType;         // 1=Student, 2=Employee, 3=Official
     public field verificationHash; // Hash of verification data
+    public field timeEpoch;        // Time epoch for rate limiting
+    public field nullifier;       // Rate limiting nullifier
     
     // Constraints
     constraint {
@@ -24,15 +27,20 @@ circuit IdentityVerification {
         // Verify the hash matches the private inputs
         verificationHash == hash(name, organization, role, idNumber);
         
-        // Ensure name and organization are not empty (non-zero)
+        // Rate limiting: generate unique nullifier per epoch
+        nullifier == hash(userSecret, timeEpoch);
+        
+        // Ensure required fields are not empty
         name != 0;
         organization != 0;
+        userSecret != 0;
     }
     
-    // Output: proof that user has valid credentials of specified type
+    // Output: proof with rate limiting capability
     return {
         organizationType: organizationType,
         roleType: roleType,
-        isVerified: 1
+        isVerified: 1,
+        nullifier: nullifier
     };
 }

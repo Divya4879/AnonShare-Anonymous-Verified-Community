@@ -61,12 +61,27 @@ class MidnightIntegration {
         }
 
         try {
-            console.log('🔒 Generating zero-knowledge proof with SHA-256 hashing...');
+            console.log('🔒 Generating advanced ZK proof with rate limiting...');
+            
+            // Generate user secret for nullifiers (persistent per user)
+            const userSecret = await this.getUserSecret(verificationData);
+            
+            // Calculate current time epoch (1-hour windows)
+            const timeEpoch = Math.floor(Date.now() / (1000 * 60 * 60));
+            
+            // Generate nullifier for rate limiting
+            const nullifier = await CryptoHash.hash([userSecret, timeEpoch.toString()]);
+            
+            // Check rate limiting
+            if (this.usedNullifiers.has(nullifier)) {
+                throw new Error('Rate limit exceeded: Only 1 verification per hour allowed');
+            }
             
             // Private inputs (hashed and hidden)
             const privateInputs = {
                 nameHash: await CryptoHash.hash([verificationData.name]),
                 personalIdHash: await CryptoHash.hash([verificationData.idNumber || 'default']),
+                userSecret: userSecret,
                 secretNonce: await CryptoHash.hash([Date.now().toString(), Math.random().toString()])
             };
 
@@ -76,20 +91,26 @@ class MidnightIntegration {
                 role: verificationData.role,
                 organizationType: this.getOrganizationType(verificationData.organization),
                 roleType: this.getRoleType(verificationData.role),
+                timeEpoch: timeEpoch,
+                nullifier: nullifier,
                 timestamp: Date.now(),
                 verificationScore: verificationData.verificationScore || 8
             };
 
             const proof = await this.createCryptographicProof(privateInputs, publicInputs);
             
-            console.log('✅ ZK proof generated successfully');
+            // Store nullifier to prevent reuse
+            this.usedNullifiers.set(nullifier, Date.now());
+            
+            console.log('✅ Advanced ZK proof generated with rate limiting');
             console.log('🔒 Private data hashed with SHA-256');
-            console.log('👁️ Organization visible for community feedback');
+            console.log('⏰ Rate limiting nullifier:', nullifier.substring(0, 8) + '...');
             
             return {
                 zkProof: proof,
                 publicData: publicInputs,
                 proofHash: proof.proofHash,
+                nullifier: nullifier,
                 isValid: true
             };
             
@@ -97,6 +118,15 @@ class MidnightIntegration {
             console.error('❌ ZK proof generation failed:', error);
             throw error;
         }
+    }
+
+    async getUserSecret(verificationData) {
+        // Generate consistent secret per user (based on document data)
+        const userIdentifier = await CryptoHash.hash([
+            verificationData.name || 'Anonymous',
+            verificationData.idNumber || 'ID123'
+        ]);
+        return await CryptoHash.hash(['user_secret', userIdentifier]);
     }
 
     async createCryptographicProof(privateInputs, publicInputs) {

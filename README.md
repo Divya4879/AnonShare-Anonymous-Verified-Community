@@ -26,29 +26,32 @@ VerifiedVoices enables anonymous participation in verified communities through a
 
 AnonShare introduces **Selective Disclosure Verification** - a breakthrough application of zero-knowledge proofs that enables:
 
-### 🔒 **Cryptographic Privacy**
+### 🔒 **Advanced Cryptographic Privacy**
 - **SHA-256 commitments** hide personal data
 - **Groth16-style ZK proofs** verify credentials without exposure
-- **Rate-limiting nullifiers** prevent spam while preserving anonymity
+- **Time-based nullifiers** prevent spam while preserving anonymity
+- **Rate limiting circuits** allow only 1 verification per hour per user
 
 ### 🏆 **Anonymous Reputation**
 - Build trust without revealing identity
 - Consistent scoring across sessions
 - Sybil-resistant through cryptographic nullifiers
 
-### 🌐 **Universal Verification**
-- Government IDs (Aadhaar, Passport, Driver's License)
-- Academic credentials (University IDs, Transcripts)
-- Corporate identification (Employee badges)
+### 🌐 **Universal Accessibility**
+- **WCAG 2.1 AA Compliance** with comprehensive ARIA labels
+- **Keyboard Navigation** support for all interactive elements  
+- **Screen Reader Optimization** with live regions and announcements
+- **Focus Management** with visible focus indicators
 
 ## ✨ Key Features
 
 | Feature | Description | Innovation Level |
 |---------|-------------|------------------|
 | **Zero-Knowledge Verification** | Prove credentials without revealing identity | 🔥 Breakthrough |
-| **Rate-Limiting Nullifiers** | Prevent spam while maintaining anonymity | 🔥 Advanced |
+| **Time-Based Rate Limiting** | Advanced nullifiers prevent spam (1/hour) | 🔥 Advanced |
 | **Anonymous Reputation** | Build trust without identity linkage | 🔥 Novel |
 | **Selective Disclosure** | Show organization, hide personal details | 🔥 Innovative |
+| **Full Accessibility Support** | WCAG 2.1 AA compliant with ARIA labels | ⭐ Professional |
 | **Real Document Support** | Works with actual government/academic IDs | ⭐ Practical |
 | **Cryptographic Visualizations** | Educational animations of ZK processes | ⭐ Professional |
 

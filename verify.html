@@ -77,6 +77,29 @@
             transition: all 0.3s ease;
         }
         
+        /* Accessibility - Screen Reader Only Content */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        .sr-only.focus\:not-sr-only:focus {
+            position: static;
+            width: auto;
+            height: auto;
+            padding: inherit;
+            margin: inherit;
+            overflow: visible;
+            clip: auto;
+            white-space: normal;
+        }
+        
         /* Privacy Modal Animations */
         #privacy-modal {
             animation: fadeIn 0.3s ease;
@@ -213,26 +236,30 @@
                 </div>
 
                 <!-- File Upload Area -->
-                <div id="upload-area" class="upload-area rounded-lg p-12 text-center cursor-pointer">
+                <div id="upload-area" class="upload-area rounded-lg p-12 text-center cursor-pointer" 
+                     role="button" 
+                     tabindex="0"
+                     aria-label="Click to upload document or drag and drop files here"
+                     aria-describedby="upload-instructions">
                     <div id="upload-content">
-                        <svg class="mx-auto h-16 w-16 text-pink-300 mb-4" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                        <svg class="mx-auto h-16 w-16 text-pink-300 mb-4" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                             <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                         <h3 class="text-xl font-semibold text-gradient mb-2">Drop your document here</h3>
-                        <p class="text-pink-200 mb-4">or click to browse files</p>
-                        <button class="btn-gradient text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">
+                        <p id="upload-instructions" class="text-pink-200 mb-4">or click to browse files. Supported: JPG, JPEG, PNG (Max 10MB)</p>
+                        <button class="btn-gradient text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity focus:ring-4 focus:ring-pink-500 focus:outline-none">
                             Choose File
                         </button>
                     </div>
-                    <input type="file" id="file-input" class="hidden" accept=".jpg,.jpeg,.png">
+                    <input type="file" id="file-input" class="hidden" accept=".jpg,.jpeg,.png" aria-label="Upload document file">
                 </div>
 
                 <!-- Preview Area -->
-                <div id="preview-area" class="hidden mt-6">
+                <div id="preview-area" class="hidden mt-6" role="region" aria-labelledby="preview-heading">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gradient">Preview</h3>
-                        <button id="remove-file" class="text-red-400 hover:text-red-300 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <h3 id="preview-heading" class="text-lg font-semibold text-gradient">Preview</h3>
+                        <button id="remove-file" class="text-red-400 hover:text-red-300 transition-colors focus:ring-4 focus:ring-red-500 focus:outline-none" aria-label="Remove uploaded file">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
                         </button>
@@ -247,21 +274,24 @@
 
                 <!-- Verify Button -->
                 <div class="text-center mt-8">
-                    <button id="verify-btn" class="btn-gradient text-white px-8 py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    <button id="verify-btn" class="btn-gradient text-white px-8 py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed focus:ring-4 focus:ring-pink-500 focus:outline-none" 
+                            disabled
+                            aria-describedby="verify-status">
                         Verify Document
                     </button>
+                    <div id="verify-status" class="sr-only" aria-live="polite" aria-atomic="true"></div>
                 </div>
             </div>
 
             <!-- Processing Section -->
-            <div id="processing-section" class="hidden card-gradient rounded-xl p-8 mb-8">
+            <div id="processing-section" class="hidden card-gradient rounded-xl p-8 mb-8" role="region" aria-labelledby="processing-heading" aria-live="polite">
                 <div class="text-center">
-                    <div class="animate-spin rounded-full h-16 w-16 border-4 border-pink-500 border-t-transparent mx-auto mb-4"></div>
-                    <h2 class="text-2xl font-bold text-gradient mb-4">Processing Your Document...</h2>
+                    <div class="animate-spin rounded-full h-16 w-16 border-4 border-pink-500 border-t-transparent mx-auto mb-4" aria-hidden="true"></div>
+                    <h2 id="processing-heading" class="text-2xl font-bold text-gradient mb-4">Processing Your Document...</h2>
                     <p class="text-pink-200 mb-6">Our AI is analyzing your document for verification</p>
                     
                     <!-- Progress Steps -->
-                    <div class="space-y-4">
+                    <div class="space-y-4" role="progressbar" aria-label="Verification progress">
                         <div class="flex items-center justify-between">
                             <span class="text-pink-200">Extracting text with OCR...</span>
                             <div id="step1" class="w-6 h-6 rounded-full border-2 border-pink-500"></div>
@@ -571,21 +601,21 @@
                     
                     <div class="space-y-6">
                         <!-- Step 1: Input Hashing -->
-                        <div id="crypto-step-1" class="crypto-step bg-black bg-opacity-30 rounded-lg p-4 opacity-50">
+                        <div id="crypto-step-1" class="crypto-step bg-black bg-opacity-30 rounded-lg p-4 opacity-50" role="region" aria-labelledby="step1-heading">
                             <div class="flex items-center mb-3">
-                                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3" aria-hidden="true">
                                     <span class="text-white font-bold text-sm">1</span>
                                 </div>
-                                <h4 class="text-blue-300 font-semibold">SHA-256 Hashing Private Inputs</h4>
+                                <h4 id="step1-heading" class="text-blue-300 font-semibold">SHA-256 Hashing Private Inputs</h4>
                             </div>
                             <div class="ml-11 space-y-2">
                                 <div class="flex items-center justify-between">
                                     <span class="text-pink-200 text-sm">Name Hash:</span>
-                                    <span id="name-hash" class="text-blue-400 font-mono text-xs">Generating...</span>
+                                    <span id="name-hash" class="text-blue-400 font-mono text-xs" aria-live="polite">Generating...</span>
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <span class="text-pink-200 text-sm">ID Hash:</span>
-                                    <span id="id-hash" class="text-blue-400 font-mono text-xs">Generating...</span>
+                                    <span id="id-hash" class="text-blue-400 font-mono text-xs" aria-live="polite">Generating...</span>
                                 </div>
                             </div>
                         </div>
@@ -814,8 +844,14 @@
             });
         });
 
-        // Upload area click
+        // Upload area click and keyboard support
         uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                fileInput.click();
+            }
+        });
 
         // Drag and drop
         uploadArea.addEventListener('dragover', (e) => {
@@ -1697,10 +1733,12 @@
             errorDiv.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm ${
                 type === 'error' ? 'bg-red-600' : 'bg-yellow-600'
             } text-white`;
+            errorDiv.setAttribute('role', 'alert');
+            errorDiv.setAttribute('aria-live', 'assertive');
             
             errorDiv.innerHTML = `
                 <div class="flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <span class="text-sm">${message}</span>
@@ -1708,6 +1746,13 @@
             `;
             
             document.body.appendChild(errorDiv);
+            
+            // Update verify status for screen readers
+            const verifyStatus = document.getElementById('verify-status');
+            if (verifyStatus) {
+                verifyStatus.textContent = `Error: ${message}`;
+            }
+            
             setTimeout(() => errorDiv.remove(), 5000);
         }
 
