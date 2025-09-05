@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnonShare - Anonymous Verified Community Platform</title>
+    <title>VerifiedVoices - Anonymous Verified Community Platform</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23ec4899'/><path d='M30 40h40v20H30z' fill='white' opacity='0.9'/><circle cx='35' cy='45' r='3' fill='%23ec4899'/><path d='M42 43h25v4H42z' fill='%23ec4899'/><path d='M42 50h20v3H42z' fill='%23ec4899'/><circle cx='50' cy='70' r='8' fill='white' opacity='0.3'/><path d='M45 67l3 3 7-7' stroke='white' stroke-width='2' fill='none'/></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -46,17 +46,13 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
-                    <h1 class="text-2xl font-bold text-gradient">VerifyID</h1>
+                    <h1 class="text-2xl font-bold text-gradient">VerifiedVoices</h1>
                 </div>
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-4">
                         <a href="index.html" class="text-pink-200 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Home</a>
-                        <a href="verify.html" class="text-pink-200 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Verify ID</a>
+                        <a href="verify.html" class="text-pink-200 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Verify Identity</a>
                         <a href="posts.html" class="text-pink-200 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Community</a>
-                        <div id="midnight-status" class="flex items-center space-x-2 px-3 py-2">
-                            <div id="midnight-indicator" class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></div>
-                            <span id="midnight-text" class="text-xs text-pink-200">Connecting...</span>
-                        </div>
                     </div>
                 </div>
                 <div class="md:hidden">
@@ -71,7 +67,7 @@
         <div id="mobile-menu" class="md:hidden hidden bg-black bg-opacity-50">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <a href="index.html" class="text-pink-200 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
-                <a href="verify.html" class="text-pink-200 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Verify ID</a>
+                <a href="verify.html" class="text-pink-200 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Verify Identity</a>
                 <a href="posts.html" class="text-pink-200 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Community</a>
             </div>
         </div>
@@ -171,7 +167,7 @@
     <!-- Footer -->
     <footer class="border-t border-pink-500 border-opacity-20 py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-pink-200">&copy; 2024 AnonShare. Anonymous verified community for authentic workplace, university, and country insights.</p>
+            <p class="text-pink-200">&copy; 2024 VerifiedVoices. Anonymous verified community for authentic workplace, university, and country insights.</p>
         </div>
     </footer>
 
@@ -188,49 +184,16 @@
     
     <script>
         // Mobile menu toggle
-        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        });
-
-        // Initialize Midnight Network
-        async function initializeMidnight() {
-            const indicator = document.getElementById('midnight-indicator');
-            const text = document.getElementById('midnight-text');
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
             
-            try {
-                indicator.className = 'w-2 h-2 rounded-full bg-yellow-500 animate-pulse';
-                text.textContent = 'Initializing...';
-                
-                // Check if midnight object exists
-                if (typeof midnight === 'undefined') {
-                    throw new Error('Midnight integration not loaded');
-                }
-                
-                // Initialize ID verification system
-                const success = await midnight.initialize();
-                
-                if (success) {
-                    const status = await midnight.getNetworkStatus();
-                    indicator.className = 'w-2 h-2 rounded-full bg-green-500';
-                    text.textContent = 'ZK Ready';
-                    text.title = 'ID verification with ZK proofs ready';
-                } else {
-                    throw new Error('Initialization failed');
-                }
-            } catch (error) {
-                console.error('Midnight initialization failed:', error);
-                indicator.className = 'w-2 h-2 rounded-full bg-green-500';
-                text.textContent = 'Demo Ready';
-                text.title = 'Challenge compliant demo mode';
-                
-                // Don't show alert, just log
-                console.log('Running in demo mode - this is normal and challenge compliant');
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
             }
-        }
-
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', initializeMidnight);
+        });
     </script>
 </body>
 </html>
